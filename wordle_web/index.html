@@ -68,7 +68,7 @@
                 border-color: #228843;
             }
             .protected__content__btn {
-                background-color: #228843;
+                background-color: #4CAF50;
                 border-radius: 3px;
                 cursor: pointer;
                 border: none;
@@ -92,7 +92,7 @@
         <div class="protected">
             <div class="protected__alert" data-id="alert">You entered the wrong password</div>
             <div class="protected__content">
-                <h1 class="protected__content__heading">You need a password to continue</h1>
+                <h1 class="protected__content__heading">You need a passworldle to continue</h1>
                 <input class="protected__content__input" data-id="password" type="password" placeholder="Enter the passworldle"/>
                 <button data-id="button" type="button" class="protected__content__btn">Continue</button>
             </div>
@@ -115,15 +115,15 @@
                 request.onload = function () {
                     if (request.status >= 200 && request.status < 400) {
                         window.location = url
-                    } /*else {
-                        parent.location.hash = hash
+                    } else {
+                        //parent.location.hash = hash
                         alert[0].style.display = 'block'
                         password[0].setAttribute('placeholder', 'Incorrect password')
                         password[0].value = ''
-                    }*/
+                    }
                 }
                 request.onerror = function () {
-                    //parent.location.hash = hash
+                    parent.location.hash = hash
                     alert[0].style.display = 'block'
                     password[0].setAttribute('placeholder', 'Incorrect password')
                     password[0].value = ''
