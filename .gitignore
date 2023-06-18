@@ -1,2 +1,8 @@
-
 .vscode/launch.json
+
+*.c
+*.pyd
+cy*.html
+build/
+__pycache__/
+
