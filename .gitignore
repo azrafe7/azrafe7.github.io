@@ -4,5 +4,6 @@
 *.pyd
 cy*.html
 build/
+cython/
 __pycache__/
 
