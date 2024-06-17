@@ -1,0 +1,54 @@
+<html>
+    <head>
+    <style>
+    body {
+      font-family: monospace;
+    }
+    #text-container {
+      display: flex;
+    }
+    .text-sep {
+      min-width: 15px;
+    }
+    textarea {
+      width: 40%;
+      font-size: .9em;
+    }
+    #controls {
+      padding: 10px;
+    }
+    .clickable {
+      cursor: pointer;
+    }
+    button {
+      margin-right: 5px;
+    }
+    input[type="checkbox"] {
+      vertical-align: bottom;
+    }
+    #output
+    </style>
+  </head>
+  <body>
+    <h3>Compare JSON responses</h3>
+    <div id="container">
+      <span id="text-container">
+        <textarea id="text_A">
+        </textarea>
+        <span class="text-sep"></span>
+        <textarea id="text_B">
+        </textarea>
+      </span>
+    </div>
+    <div id="controls">
+      <span>
+        <button id="format-button" class="clickable">format</button>
+        <button id="compare-button" class="clickable">compare</button>
+        <input type="checkbox" id="strict_order_check" class="clickable"></input>
+        <label for="strict_order_check" class="clickable">strict order</label>
+        <span style="padding-left: 25px"><b>OUTPUT: </b></span>
+        <span id="output" placeholder="output"></span>
+    </div>
+    <script src="index.js"></script>
+  </body>
+</html>
