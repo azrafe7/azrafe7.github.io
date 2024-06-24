@@ -110,7 +110,7 @@ compare_button.addEventListener('click', (evt) => {
   
   let areEqual = value_equals(responseA, responseB, strictOrderCheck);
   
-  let extraMsg = ' They are ' + (areEqual ? ' ' : ' NOT ') + 'equal (in ' + (strictOrderCheck ? '' : 'non-') + 'strictOrder mode))';
+  let extraMsg = ' They are ' + (areEqual ? ' ' : ' NOT ') + 'equal (in ' + (strictOrderCheck ? '' : 'non-') + 'strictOrder mode)';
   output_el.innerHTML = '<b style="color:' + (areEqual ? '#0f0' : '#f00') + '">' + areEqual + '</b>';
   output_el.innerHTML += extraMsg;
 });
