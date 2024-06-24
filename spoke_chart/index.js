@@ -23,13 +23,14 @@ let canvas = document.querySelector('canvas#chart');
 
 let compare_button = document.querySelector('#compare-button');
 let format_button = document.querySelector('#format-button');
+let randomize_button = document.querySelector('#randomize-button');
 let strict_checkbox = document.querySelector('#strict_order_check');
 let strict_label = document.querySelector('label[for="strict_order_check"]');
 
 let output_el = document.querySelector('#output');
 
-strict_checkbox.style.display = "none";
-strict_label.style.display = "none";
+// strict_checkbox.style.display = "none";
+// strict_label.style.display = "none";
 
 text_A.value = JSON.stringify(responseA, undefined, '  ');
 
@@ -39,6 +40,39 @@ function setupEventListeners() {
     responseA = parseJson();
     
     text_A.value = JSON.stringify(responseA, undefined, '  ');
+    output_el.innerHTML = `Textarea JSON formatted (${responseA.data.length} data points).`;
+  });
+  
+  randomize_button.addEventListener('click', (evt) => {
+    let style = {};
+    style.width = 400 + parseInt(Math.random() * 400);
+    style.height = 400 + parseInt(Math.random() * 200);
+    style.spokeLength = style.width * .4;
+    let randomizeColor = strict_checkbox.checked;
+    if (randomizeColor) {
+      style.spokeColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+      style.circleColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+    }
+    style.lineWidth = 1 + parseInt(Math.random() * 6);
+    
+    let dataLength = 3 + parseInt(1 + Math.random() * 7);
+    if (Math.random() < .4) dataLength = 5;
+    let data = [];
+    for (let d = 0; d < dataLength; d++) {
+      let entry = {};
+      entry.distance = Math.random() * style.spokeLength;
+      entry.radius = Math.random() * style.spokeLength * .8;
+      data.push(entry);
+    }
+    
+    responseA = {
+      data: data,
+      style: style,
+    };
+    
+    text_A.value = JSON.stringify(responseA);
+    format_button.click();
+    updateChart();
   });
 
   compare_button.addEventListener('click', (evt) => {
