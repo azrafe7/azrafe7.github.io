@@ -19,6 +19,7 @@ let responseA = {
     circleColor:'#000', 
   }
 };
+responseA.style = {...STYLE_DEFAULTS, ...responseA.style};
 
 let text_A = document.querySelector('#text_A');
 let canvas = document.querySelector('canvas#chart');
@@ -49,7 +50,7 @@ function setupEventListeners() {
     let style = {};
     style.width = 400 + parseInt(Math.random() * 400);
     style.height = 400 + parseInt(Math.random() * 200);
-    style.spokeLength = style.width * .4;
+    style.spokeLength = +(style.width * .4).toFixed(2);
     let randomizeColor = strict_checkbox.checked;
     if (randomizeColor) {
       style.spokeColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16) + '80';
@@ -57,14 +58,14 @@ function setupEventListeners() {
     }
     style.lineWidth = 1 + parseInt(Math.random() * 6);
     style = {...STYLE_DEFAULTS, ...style};
-    
+
     let dataLength = 3 + parseInt(1 + Math.random() * 7);
     if (Math.random() < .4) dataLength = 5;
     let data = [];
     for (let d = 0; d < dataLength; d++) {
       let entry = {};
-      entry.distance = Math.random() * style.spokeLength;
-      entry.radius = Math.random() * style.spokeLength * .8;
+      entry.distance = +(Math.random() * style.spokeLength).toFixed(2);
+      entry.radius = +(Math.random() * style.spokeLength * .8).toFixed(2);
       data.push(entry);
     }
     
