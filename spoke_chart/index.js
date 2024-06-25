@@ -1,7 +1,7 @@
 'use strict';
 
 const STYLE_DEFAULTS = { width:400, height:400, lineWidth:2, spokeColor:'rgb(255, 0, 0, .5)', circleColor:'#000', spokeLength:180, 
-                         spokeFont:'bold 14px monospace', circleFont:'12px monospace' };
+                         spokeFont:'bold 14px monospace', circleFont:'12px monospace', backgroundColor: 'white' };
 let responseA = {
   data: [
     {distance: 100, radius:30},
@@ -16,7 +16,7 @@ let responseA = {
     spokeLength:180,
     lineWidth:3, 
     spokeColor:'rgb(255, 0, 0, .5)', 
-    circleColor:'#000', 
+    circleColor:'#000',
   }
 };
 responseA.style = {...STYLE_DEFAULTS, ...responseA.style};
@@ -59,7 +59,7 @@ function setupEventListeners() {
     style.lineWidth = 1 + parseInt(Math.random() * 6);
     style = {...STYLE_DEFAULTS, ...style};
 
-    let dataLength = 3 + parseInt(1 + Math.random() * 7);
+    let dataLength = 3 + parseInt(1 + Math.random() * 5);
     if (Math.random() < .4) dataLength = 5;
     let data = [];
     for (let d = 0; d < dataLength; d++) {
@@ -114,6 +114,10 @@ function createSpokeChart(canvas, data, style={}) {
   let dataLength = data.length;
   let angleStep = (2 * Math.PI) / dataLength;
   let startAngle = -Math.PI / 2;
+
+  // fill background color
+  ctx.fillStyle = style.backgroundColor;
+  ctx.fillRect(0, 0, style.width, style.height);
 
   // draw axes
   let i = 0;
