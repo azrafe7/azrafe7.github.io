@@ -1,6 +1,6 @@
 'use strict';
 
-const STYLE_DEFAULTS = { width:400, height:400, lineWidth:2, spokeColor:'rgb(255, 0, 0, .5)', circleColor:'#000', spokeLength:180, 
+const STYLE_DEFAULTS = { width:400, height:400, lineWidth:2, spokeColor:'rgb(255, 0, 0, .5)', circleColor:'#000', spokeLength:180,
                          spokeFont:'bold 14px monospace', circleFont:'12px monospace', backgroundColor: 'white' };
 let responseA = {
   data: [
@@ -11,11 +11,11 @@ let responseA = {
     {distance: 110, radius:50},
   ],
   style: {
-    width:400, 
-    height:400, 
+    width:400,
+    height:400,
     spokeLength:180,
-    lineWidth:3, 
-    spokeColor:'rgb(255, 0, 0, .5)', 
+    lineWidth:3,
+    spokeColor:'rgb(255, 0, 0, .5)',
     circleColor:'#000',
   }
 };
@@ -41,11 +41,11 @@ text_A.value = JSON.stringify(responseA, undefined, '  ');
 function setupEventListeners() {
   format_button.addEventListener('click', (evt) => {
     responseA = parseJson();
-    
+
     text_A.value = JSON.stringify(responseA, undefined, '  ');
     output_el.innerHTML = `Textarea JSON formatted (${responseA.data.length} data points).`;
   });
-  
+
   randomize_button.addEventListener('click', (evt) => {
     let style = {};
     style.width = 400 + parseInt(Math.random() * 400);
@@ -68,12 +68,12 @@ function setupEventListeners() {
       entry.radius = +(Math.random() * style.spokeLength * .8).toFixed(2);
       data.push(entry);
     }
-    
+
     responseA = {
       data: data,
       style: style,
     };
-    
+
     text_A.value = JSON.stringify(responseA);
     format_button.click();
     updateChart();
@@ -108,7 +108,7 @@ function createSpokeChart(canvas, data, style={}) {
   const AXIS_TEXT_GAP = 8;
   const CIRCLE_TEXT_GAP = 10;
   const PRECISION = 0;
-  
+
   let centerPt = {x:style.width/2, y:style.height/2};
   const ctx = canvas.getContext("2d");
   let dataLength = data.length;
@@ -122,10 +122,10 @@ function createSpokeChart(canvas, data, style={}) {
   // draw axes
   let i = 0;
   for (let entry of data) {
-    
+
     let cos = Math.cos(startAngle + angleStep * i);
     let sin = Math.sin(startAngle + angleStep * i);
-    
+
     ctx.lineWidth = style.lineWidth;
 
     // lines
@@ -135,7 +135,7 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.lineTo(centerPt.x + style.spokeLength * cos, centerPt.y + style.spokeLength * sin);
     ctx.stroke();
     ctx.closePath();
-    
+
     // spoke labels
     ctx.textAlign = 'center';
     ctx.textBaseline='middle';
@@ -161,15 +161,15 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.closePath();
 
     i++;
-  }    
-  
+  }
+
   // draw data
   i = 0;
   for (let entry of data) {
-    
+
     let cos = Math.cos(startAngle + angleStep * i);
     let sin = Math.sin(startAngle + angleStep * i);
-    
+
     ctx.lineWidth = style.lineWidth;
 
     // circles
@@ -181,14 +181,14 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.arc(circleCenterPt.x, circleCenterPt.y, entry.radius, 0, Math.PI * 2, true)
     ctx.stroke();
     ctx.closePath();
-    
+
     // circle ticks
     ctx.beginPath()
     ctx.moveTo(circleStartPt.x, circleStartPt.y);
     // ctx.lineTo(circleStartPt.x + CIRCLE_TEXT_GAP * .7, circleStartPt.y);
     ctx.stroke();
     ctx.closePath()
-    
+
     // distance labels
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
@@ -228,13 +228,13 @@ function parseJson() {
     throw e;
     // console.error(e);
   }
-  
+
   return res;
 }
 
 function updateChart() {
   let res = parseJson();
-  
+
   let data = res.data;
   let style = res.style;
   createSpokeChart(canvas, data, style);
