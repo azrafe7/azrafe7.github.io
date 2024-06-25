@@ -1,19 +1,21 @@
 'use strict';
 
+const STYLE_DEFAULTS = { width:400, height:400, lineWidth:2, spokeColor:'rgb(255, 0, 0, .5)', circleColor:'#000', spokeLength:180, 
+                         spokeFont:'bold 14px monospace', circleFont:'12px monospace' };
 let responseA = {
   data: [
     {distance: 100, radius:30},
     {distance: 50, radius:10},
     {distance: 60, radius:30},
     {distance: 90, radius:50},
-    {distance: 120, radius:50},
+    {distance: 110, radius:50},
   ],
   style: {
     width:400, 
     height:400, 
     spokeLength:180,
     lineWidth:3, 
-    spokeColor:'#f00', 
+    spokeColor:'rgb(255, 0, 0, .5)', 
     circleColor:'#000', 
   }
 };
@@ -50,10 +52,11 @@ function setupEventListeners() {
     style.spokeLength = style.width * .4;
     let randomizeColor = strict_checkbox.checked;
     if (randomizeColor) {
-      style.spokeColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+      style.spokeColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16) + '80';
       style.circleColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
     }
     style.lineWidth = 1 + parseInt(Math.random() * 6);
+    style = {...STYLE_DEFAULTS, ...style};
     
     let dataLength = 3 + parseInt(1 + Math.random() * 7);
     if (Math.random() < .4) dataLength = 5;
@@ -91,15 +94,18 @@ function getRGBA(htmlColor) {
   return {rgbaStr, rgba};
 }
 
+function RGBAFromArray(rgba) {
+  return `rgb(${rgba.join(', ')})`;
+}
+
 function createSpokeChart(canvas, data, style={}) {
-  const defaults = { width:400, height:400, lineWidth:2, spokeColor:'#f00', circleColor:'#000', spokeLength:180, 
-                     spokeFont:'bold 14px monospace', circleFont:'12px monospace' };
+  const defaults = STYLE_DEFAULTS;
   style = { ...defaults, ...style };
   canvas.width = style.width;
   canvas.height = style.height;
 
   const AXIS_TEXT_GAP = 8;
-  const CIRCLE_TEXT_GAP = 5;
+  const CIRCLE_TEXT_GAP = 10;
   const PRECISION = 0;
   
   let centerPt = {x:style.width/2, y:style.height/2};
@@ -125,7 +131,7 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.stroke();
     ctx.closePath();
     
-    // spoke label
+    // spoke labels
     ctx.textAlign = 'center';
     ctx.textBaseline='middle';
     ctx.fillStyle = style.spokeColor;
@@ -135,6 +141,19 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.rotate(Math.PI * .5 + startAngle + angleStep * i);
     ctx.fillText(`axis ${i}`, 0, 0);
     ctx.restore();
+
+    // distance lines
+    ctx.lineWidth = style.lineWidth + 1.5;
+    ctx.beginPath();
+    let rgba = getRGBA(style.spokeColor).rgba;
+    if (rgba.length == 3) rgba.push(1);
+    rgba[3] = 1;
+    let distanceColor = RGBAFromArray(rgba);
+    ctx.strokeStyle = distanceColor;
+    ctx.moveTo(centerPt.x, centerPt.y);
+    ctx.lineTo(centerPt.x + entry.distance * cos, centerPt.y + entry.distance * sin);
+    ctx.stroke();
+    ctx.closePath();
 
     i++;
   }    
@@ -158,7 +177,14 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.stroke();
     ctx.closePath();
     
-    // distance label
+    // circle ticks
+    ctx.beginPath()
+    ctx.moveTo(circleStartPt.x, circleStartPt.y);
+    // ctx.lineTo(circleStartPt.x + CIRCLE_TEXT_GAP * .7, circleStartPt.y);
+    ctx.stroke();
+    ctx.closePath()
+    
+    // distance labels
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
     ctx.strokeStyle = style.circleColor;
@@ -168,19 +194,21 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.save();
     ctx.translate(circleCenterPt.x, circleCenterPt.y);
     ctx.rotate(Math.PI + startAngle + angleStep * i);
-    ctx.strokeText(`${entry.distance.toFixed(PRECISION)}`, 0, -1);
-    ctx.fillText(`${entry.distance.toFixed(PRECISION)}`, 0, -1);
+    ctx.strokeText(`${entry.distance.toFixed(PRECISION)}`, 0, -style.lineWidth / 2 - 1);
+    ctx.fillText(`${entry.distance.toFixed(PRECISION)}`, 0, -style.lineWidth / 2 - 1);
     ctx.restore();
 
-    // circle label
-    ctx.textAlign = 'start';
+    // circle labels
+    ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.strokeStyle = style.circleColor;
     ctx.fillStyle = 'white';
     ctx.lineWidth = 2;
     ctx.font = style.circleFont;
-    ctx.strokeText(`${entry.radius.toFixed(PRECISION)}`, (circleStartPt.x + CIRCLE_TEXT_GAP), circleStartPt.y);
-    ctx.fillText(`${entry.radius.toFixed(PRECISION)}`, (circleStartPt.x + CIRCLE_TEXT_GAP), circleStartPt.y);
+    // let circleLabelPt = {x:circleStartPt.x + CIRCLE_TEXT_GAP, y:circleStartPt.y};
+    let circleLabelPt = {x:circleCenterPt.x + (CIRCLE_TEXT_GAP + entry.radius) * cos, y:circleCenterPt.y + (CIRCLE_TEXT_GAP + entry.radius) * sin};
+    ctx.strokeText(`${entry.radius.toFixed(PRECISION)}`, circleLabelPt.x, circleLabelPt.y);
+    ctx.fillText(`${entry.radius.toFixed(PRECISION)}`, circleLabelPt.x, circleLabelPt.y);
 
     i++;
   }
