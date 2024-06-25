@@ -135,18 +135,18 @@ function createSpokeChart(canvas, data, style={}) {
     
     // distance label
     ctx.textAlign = 'center';
-    ctx.textBaseline='middle';
+    ctx.textBaseline = 'bottom';
     ctx.fillStyle = style.circleColor;
     ctx.font = style.circleFont;
     ctx.save();
     ctx.translate(circleCenterPt.x, circleCenterPt.y);
-    ctx.rotate(Math.PI * .5 + startAngle + angleStep * i);
-    ctx.fillText(`${entry.distance.toFixed(PRECISION)}`, 0, 0);
+    ctx.rotate(Math.PI + startAngle + angleStep * i);
+    ctx.fillText(`${entry.distance.toFixed(PRECISION)}`, 0, -2);
     ctx.restore();
 
     // circle label
     ctx.textAlign = 'start';
-    ctx.textBaseline='middle';
+    ctx.textBaseline = 'middle';
     ctx.strokeStyle = style.circleColor;
     ctx.fillStyle = style.circleColor;
     ctx.lineWidth = .75;
