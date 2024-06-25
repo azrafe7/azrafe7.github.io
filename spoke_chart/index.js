@@ -12,7 +12,7 @@ let responseA = {
     width:400, 
     height:400, 
     spokeLength:180,
-    lineWidth:4, 
+    lineWidth:3, 
     spokeColor:'#f00', 
     circleColor:'#000', 
   }
@@ -81,8 +81,8 @@ function setupEventListeners() {
 }
 
 function createSpokeChart(canvas, data, style={}) {
-  const defaults = { width:400, height:400, lineWidth:4, spokeColor:'#f00', circleColor:'#000', spokeLength:180, 
-                     spokeFont:'14px monospace', circleFont:'11px sans-serif' };
+  const defaults = { width:400, height:400, lineWidth:2, spokeColor:'#f00', circleColor:'#000', spokeLength:180, 
+                     spokeFont:'bold 14px monospace', circleFont:'12px monospace' };
   style = { ...defaults, ...style };
   canvas.width = style.width;
   canvas.height = style.height;
@@ -94,9 +94,11 @@ function createSpokeChart(canvas, data, style={}) {
   let centerPt = {x:style.width/2, y:style.height/2};
   const ctx = canvas.getContext("2d");
   let dataLength = data.length;
-  let i = 0;
   let angleStep = (2 * Math.PI) / dataLength;
   let startAngle = -Math.PI / 2;
+
+  // draw axes
+  let i = 0;
   for (let entry of data) {
     
     let cos = Math.cos(startAngle + angleStep * i);
@@ -112,16 +114,6 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.stroke();
     ctx.closePath();
     
-    // circles
-    ctx.beginPath();
-    ctx.strokeStyle = style.circleColor;
-    let circleCenterPt = {x:centerPt.x + entry.distance * cos, y:centerPt.y + entry.distance * sin};
-    let circleStartPt = {x:circleCenterPt.x + entry.radius, y:circleCenterPt.y};
-    ctx.moveTo(circleStartPt.x, circleStartPt.y);
-    ctx.arc(circleCenterPt.x, circleCenterPt.y, entry.radius, 0, Math.PI * 2, true)
-    ctx.stroke();
-    ctx.closePath();
-    
     // spoke label
     ctx.textAlign = 'center';
     ctx.textBaseline='middle';
@@ -132,27 +124,52 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.rotate(Math.PI * .5 + startAngle + angleStep * i);
     ctx.fillText(`axis ${i}`, 0, 0);
     ctx.restore();
+
+    i++;
+  }    
+  
+  // draw data
+  i = 0;
+  for (let entry of data) {
+    
+    let cos = Math.cos(startAngle + angleStep * i);
+    let sin = Math.sin(startAngle + angleStep * i);
+    
+    ctx.lineWidth = style.lineWidth;
+
+    // circles
+    ctx.beginPath();
+    ctx.strokeStyle = style.circleColor;
+    let circleCenterPt = {x:centerPt.x + entry.distance * cos, y:centerPt.y + entry.distance * sin};
+    let circleStartPt = {x:circleCenterPt.x + entry.radius, y:circleCenterPt.y};
+    ctx.moveTo(circleStartPt.x, circleStartPt.y);
+    ctx.arc(circleCenterPt.x, circleCenterPt.y, entry.radius, 0, Math.PI * 2, true)
+    ctx.stroke();
+    ctx.closePath();
     
     // distance label
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
-    ctx.fillStyle = style.circleColor;
+    ctx.strokeStyle = style.circleColor;
+    ctx.fillStyle = 'white';
     ctx.font = style.circleFont;
+    ctx.lineWidth = 2;
     ctx.save();
     ctx.translate(circleCenterPt.x, circleCenterPt.y);
     ctx.rotate(Math.PI + startAngle + angleStep * i);
-    ctx.fillText(`${entry.distance.toFixed(PRECISION)}`, 0, -2);
+    ctx.strokeText(`${entry.distance.toFixed(PRECISION)}`, 0, -1);
+    ctx.fillText(`${entry.distance.toFixed(PRECISION)}`, 0, -1);
     ctx.restore();
 
     // circle label
     ctx.textAlign = 'start';
     ctx.textBaseline = 'middle';
     ctx.strokeStyle = style.circleColor;
-    ctx.fillStyle = style.circleColor;
-    ctx.lineWidth = .75;
+    ctx.fillStyle = 'white';
+    ctx.lineWidth = 2;
     ctx.font = style.circleFont;
-    ctx.fillText(`${entry.radius.toFixed(PRECISION)}`, circleStartPt.x + CIRCLE_TEXT_GAP, circleStartPt.y);
-
+    ctx.strokeText(`${entry.radius.toFixed(PRECISION)}`, (circleStartPt.x + CIRCLE_TEXT_GAP), circleStartPt.y);
+    ctx.fillText(`${entry.radius.toFixed(PRECISION)}`, (circleStartPt.x + CIRCLE_TEXT_GAP), circleStartPt.y);
 
     i++;
   }
