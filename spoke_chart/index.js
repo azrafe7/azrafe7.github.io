@@ -80,6 +80,17 @@ function setupEventListeners() {
   });
 }
 
+function getRGBA(htmlColor) {
+  let temp = document.createElement('span');
+  temp.style.color = htmlColor;
+  document.body.appendChild(temp);
+  let style = getComputedStyle(temp);
+  let rgbaStr = style.color;
+  let rgba = Array.from(rgbaStr.matchAll(/\d+\.?\d*/g), c=> +c[0]) // style.color gives RGB string
+  temp.remove();
+  return {rgbaStr, rgba};
+}
+
 function createSpokeChart(canvas, data, style={}) {
   const defaults = { width:400, height:400, lineWidth:2, spokeColor:'#f00', circleColor:'#000', spokeLength:180, 
                      spokeFont:'bold 14px monospace', circleFont:'12px monospace' };
