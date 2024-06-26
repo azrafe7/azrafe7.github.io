@@ -1,20 +1,28 @@
 'use strict';
 
-const STYLE_DEFAULTS = { width:400, height:400, lineWidth:2, spokeColor:'rgb(255, 0, 0, .5)', circleColor:'#000',
+const STYLE_DEFAULTS = { width:500, height:500, lineWidth:2, spokeColor:'rgb(255, 0, 0, .5)', circleColor:'#000',
                          bigCircleColor:'#74FBEA', bigCircleLineWidth:10,
                          spokeLength:180, spokeFont:'bold 14px monospace', circleFont:'12px monospace', backgroundColor: 'white' };
 
+const DEFAULT_SPOKE_LABELS = [
+  'Safety',
+  'Climate',
+  'Attainment',
+  'Leadership',
+  'Engagement',
+]
+
 let responseA = {
   data: [
-    {distance: 100, radius:30},
-    {distance: 50, radius:10},
-    {distance: 60, radius:30},
-    {distance: 90, radius:50},
-    {distance: 110, radius:50},
+    {distance: 100, radius:30, label:'Safety'},
+    {distance: 50, radius:10, label:'Climate'},
+    {distance: 60, radius:30, label:'Attainment'},
+    {distance: 90, radius:50, label:'Leadership'},
+    {distance: 110, radius:50, label:'Engagement'},
   ],
   style: {
-    width:400,
-    height:400,
+    width:500,
+    height:500,
     spokeLength:180,
     lineWidth:3,
     spokeColor:'rgb(255, 0, 0, .5)',
@@ -70,6 +78,7 @@ function setupEventListeners() {
       let entry = {};
       entry.distance = +(Math.random() * style.spokeLength).toFixed(2);
       entry.radius = +(Math.random() * style.spokeLength * .8).toFixed(2);
+      entry.label = DEFAULT_SPOKE_LABELS[d % DEFAULT_SPOKE_LABELS.length];
       data.push(entry);
     }
 
@@ -109,7 +118,7 @@ function createSpokeChart(canvas, data, style={}) {
   canvas.width = style.width;
   canvas.height = style.height;
 
-  const AXIS_TEXT_GAP = 8;
+  const AXIS_TEXT_GAP = 18;
   const CIRCLE_TEXT_GAP = 10;
   const PRECISION = 0;
 
@@ -154,12 +163,11 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.textBaseline='middle';
     ctx.fillStyle = style.spokeColor;
     ctx.font = style.spokeFont;
-    ctx.save();
-    ctx.translate(centerPt.x + (AXIS_TEXT_GAP + style.spokeLength) * cos, centerPt.y + (AXIS_TEXT_GAP + style.spokeLength) * sin);
-    ctx.rotate(Math.PI * .5 + startAngle + angleStep * i);
-    ctx.fillText(`axis ${i}`, 0, 0);
-    ctx.restore();
-
+    const spokeLengthFactor = 1
+    let rightVec = {x:sin, y:-cos};
+    let spokeLabelPt = {x:centerPt.x + (AXIS_TEXT_GAP + style.spokeLength * spokeLengthFactor) * cos, y:centerPt.y + (AXIS_TEXT_GAP + style.spokeLength * spokeLengthFactor) * sin};
+    ctx.fillText(`${entry.label}`, spokeLabelPt.x, spokeLabelPt.y);
+    
     // distance lines
     ctx.lineWidth = style.lineWidth + 1.5;
     ctx.beginPath();
@@ -212,8 +220,8 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.save();
     ctx.translate(circleCenterPt.x, circleCenterPt.y);
     ctx.rotate(Math.PI + startAngle + angleStep * i);
-    ctx.strokeText(`${entry.distance.toFixed(PRECISION)}`, 0, -style.lineWidth / 2 - 1);
-    ctx.fillText(`${entry.distance.toFixed(PRECISION)}`, 0, -style.lineWidth / 2 - 1);
+    // ctx.strokeText(`${entry.distance.toFixed(PRECISION)}`, 0, -style.lineWidth / 2 - 1);
+    // ctx.fillText(`${entry.distance.toFixed(PRECISION)}`, 0, -style.lineWidth / 2 - 1);
     ctx.restore();
 
     // circle labels
@@ -225,8 +233,8 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.font = style.circleFont;
     // let circleLabelPt = {x:circleStartPt.x + CIRCLE_TEXT_GAP, y:circleStartPt.y};
     let circleLabelPt = {x:circleCenterPt.x + (CIRCLE_TEXT_GAP + entry.radius) * cos, y:circleCenterPt.y + (CIRCLE_TEXT_GAP + entry.radius) * sin};
-    ctx.strokeText(`${entry.radius.toFixed(PRECISION)}`, circleLabelPt.x, circleLabelPt.y);
-    ctx.fillText(`${entry.radius.toFixed(PRECISION)}`, circleLabelPt.x, circleLabelPt.y);
+    // ctx.strokeText(`${entry.radius.toFixed(PRECISION)}`, circleLabelPt.x, circleLabelPt.y);
+    // ctx.fillText(`${entry.radius.toFixed(PRECISION)}`, circleLabelPt.x, circleLabelPt.y);
 
     i++;
   }
