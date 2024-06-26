@@ -1,6 +1,6 @@
 'use strict';
 
-const STYLE_DEFAULTS = { width:500, height:500, lineWidth:2, spokeColor:'rgb(255, 0, 0, .5)', circleColor:'#000',
+const STYLE_DEFAULTS = { width:500, height:500, lineWidth:2, spokeColor:'rgb(255, 0, 0)', circleColor:'#000',
                          bigCircleColor:'#74FBEA', bigCircleLineWidth:10,
                          spokeLength:180, spokeFont:'bold 14px monospace', circleFont:'12px monospace', backgroundColor: 'white' };
 
@@ -12,20 +12,28 @@ const DEFAULT_SPOKE_LABELS = [
   'Engagement',
 ]
 
+const DEFAULT_SPOKE_LABELS_PTS = [ // relative to end of spoke
+  {x:10, y:30},
+  {x:-10, y:30},
+  {x:5, y:-10},
+  {x:20, y:0},
+  {x:15, y:-5},
+]
+
 let responseA = {
   data: [
-    {distance: 100, radius:30, label:'Safety'},
-    {distance: 50, radius:10, label:'Climate'},
-    {distance: 60, radius:30, label:'Attainment'},
-    {distance: 90, radius:50, label:'Leadership'},
-    {distance: 110, radius:50, label:'Engagement'},
+    {distance: 100, radius:30, label:'Safety', labelPt:DEFAULT_SPOKE_LABELS_PTS[0]},
+    {distance: 50, radius:10, label:'Climate', labelPt:DEFAULT_SPOKE_LABELS_PTS[1]},
+    {distance: 60, radius:30, label:'Attainment', labelPt:DEFAULT_SPOKE_LABELS_PTS[2]},
+    {distance: 90, radius:50, label:'Leadership', labelPt:DEFAULT_SPOKE_LABELS_PTS[3]},
+    {distance: 110, radius:50, label:'Engagement', labelPt:DEFAULT_SPOKE_LABELS_PTS[4]},
   ],
   style: {
     width:500,
     height:500,
     spokeLength:180,
     lineWidth:3,
-    spokeColor:'rgb(255, 0, 0, .5)',
+    spokeColor:'rgb(255, 0, 0)',
     circleColor:'#000',
   }
 };
@@ -71,7 +79,8 @@ function setupEventListeners() {
     style.lineWidth = 1 + parseInt(Math.random() * 6);
     style = {...STYLE_DEFAULTS, ...style};
 
-    let dataLength = 3 + parseInt(1 + Math.random() * 5);
+    // let dataLength = 3 + parseInt(1 + Math.random() * 5);
+    let dataLength = 5;
     if (Math.random() < .4) dataLength = 5;
     let data = [];
     for (let d = 0; d < dataLength; d++) {
@@ -79,6 +88,7 @@ function setupEventListeners() {
       entry.distance = +(Math.random() * style.spokeLength).toFixed(2);
       entry.radius = +(Math.random() * style.spokeLength * .8).toFixed(2);
       entry.label = DEFAULT_SPOKE_LABELS[d % DEFAULT_SPOKE_LABELS.length];
+      if (dataLength == DEFAULT_SPOKE_LABELS_PTS.length) entry.labelPt = DEFAULT_SPOKE_LABELS_PTS[d % DEFAULT_SPOKE_LABELS_PTS.length];
       data.push(entry);
     }
 
@@ -158,16 +168,6 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.stroke();
     ctx.closePath();
 
-    // spoke labels
-    ctx.textAlign = 'center';
-    ctx.textBaseline='middle';
-    ctx.fillStyle = style.spokeColor;
-    ctx.font = style.spokeFont;
-    const spokeLengthFactor = 1
-    let rightVec = {x:sin, y:-cos};
-    let spokeLabelPt = {x:centerPt.x + (AXIS_TEXT_GAP + style.spokeLength * spokeLengthFactor) * cos, y:centerPt.y + (AXIS_TEXT_GAP + style.spokeLength * spokeLengthFactor) * sin};
-    ctx.fillText(`${entry.label}`, spokeLabelPt.x, spokeLabelPt.y);
-    
     // distance lines
     ctx.lineWidth = style.lineWidth + 1.5;
     ctx.beginPath();
@@ -178,7 +178,7 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.strokeStyle = distanceColor;
     ctx.moveTo(centerPt.x, centerPt.y);
     ctx.lineTo(centerPt.x + entry.distance * cos, centerPt.y + entry.distance * sin);
-    ctx.stroke();
+    // ctx.stroke();
     ctx.closePath();
 
     i++;
@@ -236,6 +236,31 @@ function createSpokeChart(canvas, data, style={}) {
     // ctx.strokeText(`${entry.radius.toFixed(PRECISION)}`, circleLabelPt.x, circleLabelPt.y);
     // ctx.fillText(`${entry.radius.toFixed(PRECISION)}`, circleLabelPt.x, circleLabelPt.y);
 
+    i++;
+  }
+
+  // draw axes labels
+  i = 0;
+  for (let entry of data) {
+
+    let cos = Math.cos(startAngle + angleStep * i);
+    let sin = Math.sin(startAngle + angleStep * i);
+
+    ctx.lineWidth = 1;
+
+    // spoke labels
+    ctx.textAlign = 'start';
+    ctx.textBaseline='bottom';
+    ctx.strokeStyle = style.backgroundColor;
+    ctx.fillStyle = style.spokeColor;
+    ctx.font = style.spokeFont;
+    const spokeEndPt = {x:centerPt.x + style.spokeLength * cos, y:centerPt.y + style.spokeLength * sin};
+    const spokeLengthFactor = 1
+    let spokeLabelPt = {x:centerPt.x + (AXIS_TEXT_GAP + style.spokeLength * spokeLengthFactor) * cos, y:centerPt.y + (AXIS_TEXT_GAP + style.spokeLength * spokeLengthFactor) * sin};
+    if (entry.labelPt) spokeLabelPt = {x:spokeEndPt.x + entry.labelPt.x, y:spokeEndPt.y + entry.labelPt.y};
+    ctx.strokeText(`${entry.label}`, spokeLabelPt.x, spokeLabelPt.y);
+    ctx.fillText(`${entry.label}`, spokeLabelPt.x, spokeLabelPt.y);
+    
     i++;
   }
 }
