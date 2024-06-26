@@ -1,7 +1,8 @@
 'use strict';
 
-const STYLE_DEFAULTS = { width:400, height:400, lineWidth:2, spokeColor:'rgb(255, 0, 0, .5)', circleColor:'#000', spokeLength:180,
-                         spokeFont:'bold 14px monospace', circleFont:'12px monospace', backgroundColor: 'white' };
+const STYLE_DEFAULTS = { width:400, height:400, lineWidth:2, spokeColor:'rgb(255, 0, 0, .5)', circleColor:'#000',
+                         bigCircleColor:'#74FBEA', bigCircleLineWidth:10,
+                         spokeLength:180, spokeFont:'bold 14px monospace', circleFont:'12px monospace', backgroundColor: 'white' };
 
 let responseA = {
   data: [
@@ -56,7 +57,9 @@ function setupEventListeners() {
     if (randomizeColor) {
       style.spokeColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16) + '80';
       style.circleColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+      style.bigCircleColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
     }
+    style.bigCircleLineWidth = 7 + parseInt(Math.random() * 10);
     style.lineWidth = 1 + parseInt(Math.random() * 6);
     style = {...STYLE_DEFAULTS, ...style};
 
@@ -119,6 +122,15 @@ function createSpokeChart(canvas, data, style={}) {
   // fill background color
   ctx.fillStyle = style.backgroundColor;
   ctx.fillRect(0, 0, style.width, style.height);
+
+  // draw big circle
+  ctx.lineWidth = style.bigCircleLineWidth;
+  ctx.beginPath();
+  ctx.strokeStyle = style.bigCircleColor;
+  ctx.moveTo(centerPt.x + style.spokeLength, centerPt.y);
+  ctx.arc(centerPt.x, centerPt.y, style.spokeLength, 0, Math.PI * 2, true)
+  ctx.stroke();
+  ctx.closePath();
 
   // draw axes
   let i = 0;
