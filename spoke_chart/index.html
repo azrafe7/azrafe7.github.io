@@ -4,6 +4,9 @@
     body {
       font-family: monospace;
     }
+    h3.title {
+      margin-bottom: 0px;
+    }
     #text-container {
       display: flex;
     }
@@ -15,10 +18,14 @@
       font-size: .9em;
     }
     #controls {
-      padding: 10px;
+      padding: 10px 0px;
     }
     .clickable {
       cursor: pointer;
+    }
+    label[for] {
+      margin-left: -7px;
+      margin-right: 5px;
     }
     button {
       margin-right: 5px;
@@ -32,7 +39,7 @@
     </style>
   </head>
   <body>
-    <h3>Spoke Chart</h3>
+    <h3 class="title">Spoke Chart</h3>
     <div id="controls">
       <span>
         <button id="format-button" class="clickable">format</button>

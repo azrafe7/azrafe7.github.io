@@ -2,6 +2,7 @@
 
 const STYLE_DEFAULTS = { width:400, height:400, lineWidth:2, spokeColor:'rgb(255, 0, 0, .5)', circleColor:'#000', spokeLength:180,
                          spokeFont:'bold 14px monospace', circleFont:'12px monospace', backgroundColor: 'white' };
+
 let responseA = {
   data: [
     {distance: 100, radius:30},
