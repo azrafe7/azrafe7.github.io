@@ -41,70 +41,77 @@ let responseA = {
 };
 responseA.style = {...STYLE_DEFAULTS, ...responseA.style};
 
-let text_A = document.querySelector('#text_A');
+let textA = document.querySelector('#textA');
 let canvas = document.querySelector('canvas#chart');
 
-let compare_button = document.querySelector('#compare-button');
-let format_button = document.querySelector('#format-button');
-let randomize_button = document.querySelector('#randomize-button');
-let strict_checkbox = document.querySelector('#strict_order_check');
-let strict_label = document.querySelector('label[for="strict_order_check"]');
+let updateButton = document.querySelector('#update-button');
+let formatButton = document.querySelector('#format-button');
+let randomizeButton = document.querySelector('#randomize-button');
+let randomizeCheckbox = document.querySelector('#randomize-check');
+let randomizeLabel = document.querySelector('label[for="randomize-check"]');
 
-let output_el = document.querySelector('#output');
+let outputEl = document.querySelector('#output');
 
-// strict_checkbox.style.display = "none";
-// strict_label.style.display = "none";
+// randomizeCheckbox.style.display = "none";
+// randomizeLabel.style.display = "none";
 
-text_A.value = JSON.stringify(responseA, undefined, '  ');
+textA.value = JSON.stringify(responseA, undefined, '  ');
 
+function getRandomizedChartValues(options={}) {
+  let defaultOptions = {randomizeColor:false};
+  options = {...defaultOptions, ...options};
+  let style = {};
+  style.width = 400 + parseInt(Math.random() * 400);
+  style.height = 400 + parseInt(Math.random() * 200);
+  style.spokeLength = +(style.width * .4).toFixed(2);
+  let randomizeColor = options.randomizeColor;
+  if (randomizeColor) {
+    style.spokeColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16) + '80';
+    style.circleColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+    style.bigCircleColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+  }
+  style.bigCircleLineWidth = 7 + parseInt(Math.random() * 10);
+  style.lineWidth = 1 + parseInt(Math.random() * 6);
+  style = {...STYLE_DEFAULTS, ...style};
+
+  // let dataLength = 3 + parseInt(1 + Math.random() * 5);
+  let dataLength = 5;
+  if (Math.random() < .4) dataLength = 5;
+  let data = [];
+  for (let d = 0; d < dataLength; d++) {
+    let entry = {};
+    entry.distance = +(Math.random() * style.spokeLength).toFixed(2);
+    entry.radius = +(Math.random() * style.spokeLength * .8).toFixed(2);
+    entry.label = DEFAULT_SPOKE_LABELS[d % DEFAULT_SPOKE_LABELS.length];
+    if (dataLength == DEFAULT_SPOKE_LABELS_PTS.length) entry.labelPt = DEFAULT_SPOKE_LABELS_PTS[d % DEFAULT_SPOKE_LABELS_PTS.length];
+    data.push(entry);
+  }
+  
+  return {data, style};
+}
 
 function setupEventListeners() {
-  format_button.addEventListener('click', (evt) => {
+  formatButton.addEventListener('click', (evt) => {
     responseA = parseJson();
 
-    text_A.value = JSON.stringify(responseA, undefined, '  ');
-    output_el.innerHTML = `Textarea JSON formatted (${responseA.data.length} data points).`;
+    textA.value = JSON.stringify(responseA, undefined, '  ');
+    outputEl.innerHTML = `Textarea JSON formatted (${responseA.data.length} data points).`;
   });
 
-  randomize_button.addEventListener('click', (evt) => {
-    let style = {};
-    style.width = 400 + parseInt(Math.random() * 400);
-    style.height = 400 + parseInt(Math.random() * 200);
-    style.spokeLength = +(style.width * .4).toFixed(2);
-    let randomizeColor = strict_checkbox.checked;
-    if (randomizeColor) {
-      style.spokeColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16) + '80';
-      style.circleColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
-      style.bigCircleColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
-    }
-    style.bigCircleLineWidth = 7 + parseInt(Math.random() * 10);
-    style.lineWidth = 1 + parseInt(Math.random() * 6);
-    style = {...STYLE_DEFAULTS, ...style};
-
-    // let dataLength = 3 + parseInt(1 + Math.random() * 5);
-    let dataLength = 5;
-    if (Math.random() < .4) dataLength = 5;
-    let data = [];
-    for (let d = 0; d < dataLength; d++) {
-      let entry = {};
-      entry.distance = +(Math.random() * style.spokeLength).toFixed(2);
-      entry.radius = +(Math.random() * style.spokeLength * .8).toFixed(2);
-      entry.label = DEFAULT_SPOKE_LABELS[d % DEFAULT_SPOKE_LABELS.length];
-      if (dataLength == DEFAULT_SPOKE_LABELS_PTS.length) entry.labelPt = DEFAULT_SPOKE_LABELS_PTS[d % DEFAULT_SPOKE_LABELS_PTS.length];
-      data.push(entry);
-    }
-
+  randomizeButton.addEventListener('click', (evt) => {
+    let {data, style} = getRandomizedChartValues({randomizeColor:randomizeCheckbox.checked});
+    
     responseA = {
       data: data,
       style: style,
     };
 
-    text_A.value = JSON.stringify(responseA);
-    format_button.click();
+    textA.value = JSON.stringify(responseA);
+    formatButton.click();
     updateChart();
   });
 
-  compare_button.addEventListener('click', (evt) => {
+  updateButton.addEventListener('click', (evt) => {
     updateChart();
   });
 }
@@ -289,9 +296,9 @@ function createSpokeChart(canvas, data, style={}) {
 function parseJson() {
   let res = null;
   try {
-    res = JSON.parse(text_A.value);
+    res = JSON.parse(textA.value);
   } catch(e) {
-    output_el.innerHTML = "Error parsing json. " + e;
+    outputEl.innerHTML = "Error parsing json. " + e;
     throw e;
     // console.error(e);
   }
@@ -305,7 +312,7 @@ function updateChart() {
   let data = res.data;
   let style = res.style;
   createSpokeChart(canvas, data, style);
-  output_el.innerHTML = `${data.length} data points drawn.`;
+  outputEl.innerHTML = `${data.length} data points drawn.`;
 }
 
 setupEventListeners();
