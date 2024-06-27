@@ -77,6 +77,15 @@ function setupEventListeners() {
       // Command + Enter or Ctrl + Enter pressed
       updateChart();
     }
+    if (evt.altKey && evt.which == 82) {
+      // Alt + R
+      randomizeButton.click();
+    }
+    if (evt.altKey && evt.which == 65) {
+      // Alt + A
+      autofitCheckbox.click();
+    }
+
   });
 }
 
