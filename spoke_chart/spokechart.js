@@ -1,6 +1,6 @@
 'use strict';
 
-const STYLE_DEFAULTS = { autofit:false, width:500, height:500, lineWidth:2,
+const STYLE_DEFAULTS = { autofit:false, autofitPadding:30, width:500, height:500, lineWidth:2,
                          spokeColor:'rgb(255, 0, 0)', circleColor:'#000', bigCircleColor:'#74FBEA', bigCircleLineWidth:10,
                          spokeLength:180, spokeFont:'bold 16px sans-serif', circleFont:'14px sans-serif', backgroundColor: 'white' };
 
@@ -14,8 +14,8 @@ const DEFAULT_SPOKE_LABELS = [
 
 const DEFAULT_SPOKE_LABELS_PTS = [ // relative to end of spoke
   {x:10, y:30},
-  {x:-10, y:30},
-  {x:5, y:-10},
+  {x:-20, y:35},
+  {x:-5, y:-20},
   {x:20, y:0},
   {x:15, y:-5},
 ]
@@ -89,7 +89,7 @@ function createSpokeChart(canvas, data, style={}) {
     let computedData = [];
     let autofitStyle = {};
 
-    const CHART_PADDING = 0;
+    let CHART_PADDING = style.autofitPadding || 0;
     let topLeft = {x:centerPt.x - style.spokeLength, y:centerPt.y - style.spokeLength};
     let bottomRight = {x:centerPt.x + style.spokeLength, y:centerPt.y + style.spokeLength};
     
