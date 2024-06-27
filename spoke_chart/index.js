@@ -26,11 +26,11 @@ const MAX_DISTANCE_VALUE = 10;
 
 let responseA = {
   data: [
-    {distance: 5, radius:30, label:'Safety', labelPt:DEFAULT_SPOKE_LABELS_PTS[0]},
-    {distance: 6, radius:10, label:'Climate', labelPt:DEFAULT_SPOKE_LABELS_PTS[1]},
-    {distance: 7, radius:30, label:'Attainment', labelPt:DEFAULT_SPOKE_LABELS_PTS[2]},
-    {distance: 5, radius:50, label:'Leadership', labelPt:DEFAULT_SPOKE_LABELS_PTS[3]},
-    {distance: 4, radius:50, label:'Engagement', labelPt:DEFAULT_SPOKE_LABELS_PTS[4]},
+    {distance: 5, radius:2.5, label:'Safety', labelPt:DEFAULT_SPOKE_LABELS_PTS[0]},
+    {distance: 6, radius:1.5, label:'Climate', labelPt:DEFAULT_SPOKE_LABELS_PTS[1]},
+    {distance: 7, radius:2.2, label:'Attainment', labelPt:DEFAULT_SPOKE_LABELS_PTS[2]},
+    {distance: 5, radius:3.5, label:'Leadership', labelPt:DEFAULT_SPOKE_LABELS_PTS[3]},
+    {distance: 4, radius:3.2, label:'Engagement', labelPt:DEFAULT_SPOKE_LABELS_PTS[4]},
   ],
   style: {
     width:500,
@@ -84,7 +84,7 @@ function getRandomizedChartValues(options={}) {
   for (let d = 0; d < dataLength; d++) {
     let entry = {};
     entry.distance = +(MIN_DISTANCE_VALUE + Math.random() * (MAX_DISTANCE_VALUE - MIN_DISTANCE_VALUE)).toFixed(2);
-    entry.radius = +(Math.random() * style.spokeLength * .8).toFixed(2);
+    entry.radius = +(MIN_DISTANCE_VALUE + Math.random() * (MAX_DISTANCE_VALUE - MIN_DISTANCE_VALUE)).toFixed(2);
     entry.label = DEFAULT_SPOKE_LABELS[d % DEFAULT_SPOKE_LABELS.length];
     if (dataLength == DEFAULT_SPOKE_LABELS_PTS.length) entry.labelPt = DEFAULT_SPOKE_LABELS_PTS[d % DEFAULT_SPOKE_LABELS_PTS.length];
     data.push(entry);
@@ -214,11 +214,25 @@ function createSpokeChart(canvas, data, style={}) {
     // circles
     ctx.beginPath();
     ctx.strokeStyle = style.circleColor;
-    let distance = style.spokeLength - getLengthValue(entry.distance, MIN_DISTANCE_VALUE, MAX_DISTANCE_VALUE, style.spokeLength);
+    let distance = 0;
+    if (entry.hasOwnProperty('distance')) {
+      distance = style.spokeLength - getLengthValue(entry.distance, MIN_DISTANCE_VALUE, MAX_DISTANCE_VALUE, style.spokeLength);
+    }
+    if (entry.hasOwnProperty('distancePx')) {
+      distance = style.spokeLength - entry.distancePx;
+    }
+    let radius = 0;
+    if (entry.hasOwnProperty('radius')) {
+      radius = getLengthValue(entry.radius, MIN_DISTANCE_VALUE, MAX_DISTANCE_VALUE, style.spokeLength);
+      radius = Math.max(radius, 1); // ensure a dot is shown if radius is 0
+    }
+    if (entry.hasOwnProperty('radiusPx')) {
+      radius = entry.radiusPx;
+    }
     let circleCenterPt = {x:centerPt.x + distance * cos, y:centerPt.y + distance * sin};
-    let circleStartPt = {x:circleCenterPt.x + entry.radius, y:circleCenterPt.y};
+    let circleStartPt = {x:circleCenterPt.x + radius, y:circleCenterPt.y};
     ctx.moveTo(circleStartPt.x, circleStartPt.y);
-    ctx.arc(circleCenterPt.x, circleCenterPt.y, entry.radius, 0, Math.PI * 2, true)
+    ctx.arc(circleCenterPt.x, circleCenterPt.y, radius, 0, Math.PI * 2, true)
     ctx.stroke();
     ctx.closePath();
 
