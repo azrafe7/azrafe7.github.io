@@ -1,6 +1,6 @@
 'use strict';
 
-const STYLE_DEFAULTS = { width:500, height:500, lineWidth:2, autofit:false,
+const STYLE_DEFAULTS = { autofit:false, width:500, height:500, lineWidth:2,
                          spokeColor:'rgb(255, 0, 0)', circleColor:'#000', bigCircleColor:'#74FBEA', bigCircleLineWidth:10,
                          spokeLength:180, spokeFont:'bold 16px sans-serif', circleFont:'14px sans-serif', backgroundColor: 'white' };
 
@@ -87,7 +87,12 @@ function createSpokeChart(canvas, data, style={}) {
   // compute values once
   function getComputedData(data, style) {
     let computedData = [];
+    let autofitStyle = {};
 
+    const CHART_PADDING = 0;
+    let topLeft = {x:centerPt.x - style.spokeLength, y:centerPt.y - style.spokeLength};
+    let bottomRight = {x:centerPt.x + style.spokeLength, y:centerPt.y + style.spokeLength};
+    
     let i = 0;
     for (let entry of data) {
       let cos = Math.cos(startAngle + angleStep * i);
@@ -111,9 +116,31 @@ function createSpokeChart(canvas, data, style={}) {
       }
       
       computedData.push({distance:distance, radius:radius, cos:cos, sin:sin});
+      
+      let circleCenterPt = {x:centerPt.x + distance * cos, y:centerPt.y + distance * sin};
+      topLeft.x = Math.min(circleCenterPt.x - radius, topLeft.x);
+      topLeft.y = Math.min(circleCenterPt.y - radius, topLeft.y);
+      bottomRight.x = Math.max(circleCenterPt.x + radius, bottomRight.x);
+      bottomRight.y = Math.max(circleCenterPt.y + radius, bottomRight.y);
+    
       i++;
     }
-    return computedData;
+    
+    // compute autofit values
+    autofitStyle.topLeft = topLeft;
+    autofitStyle.bottomRight = bottomRight;
+    autofitStyle.width = Math.max(centerPt.x - topLeft.x, bottomRight.x - centerPt.x) * 2;
+    autofitStyle.height = Math.max(centerPt.y - topLeft.y, bottomRight.y - centerPt.y) * 2;
+    autofitStyle.isPartiallyOnScreen = topLeft.x < 0 || topLeft.y < 0 || bottomRight.x > style.width || bottomRight.y > style.height;
+    let xScale = style.width / autofitStyle.width;
+    let yScale = style.height / autofitStyle.height;
+    let scale = Math.min(xScale, yScale);
+    autofitStyle.spokeLength = (style.spokeLength * scale) - CHART_PADDING;
+    
+    console.log('currStyle:', style);
+    console.log('scale:', scale, 'autofitStyle:', autofitStyle);
+    
+    return {computedData, autofitStyle};
   }
 
   const defaults = STYLE_DEFAULTS;
@@ -131,7 +158,17 @@ function createSpokeChart(canvas, data, style={}) {
   let angleStep = (2 * Math.PI) / dataLength;
   let startAngle = -Math.PI / 2;
 
-  let computedData = getComputedData(data, style);
+  let {computedData, autofitStyle} = getComputedData(data, style);
+  let chartInfo = {isPartiallyOnScreen:autofitStyle.isPartiallyOnScreen};
+  chartInfo.autofitWidth = autofitStyle.width;
+  chartInfo.autofitHeight = autofitStyle.height;
+  
+  if (style.autofit) {
+    style.spokeLength = autofitStyle.spokeLength;
+    let res = getComputedData(data, style);
+    computedData = res.computedData;
+    chartInfo.isPartiallyOnScreen = res.autofitStyle.isPartiallyOnScreen;
+  }
 
   // fill background color
   ctx.fillStyle = style.backgroundColor;
@@ -275,4 +312,6 @@ function createSpokeChart(canvas, data, style={}) {
     
     i++;
   }
+  
+  return chartInfo;
 }

@@ -60,6 +60,7 @@ function setupEventListeners() {
   });
 
   autofitCheckbox.addEventListener('change', (evt) => {
+    responseA = parseJson();
     responseA.style.autofit = autofitCheckbox.checked;
 
     textA.value = JSON.stringify(responseA);
@@ -97,7 +98,11 @@ function updateChart() {
 
   let data = res.data;
   let style = res.style;
-  createSpokeChart(canvas, data, style);
+  let chartInfo = createSpokeChart(canvas, data, style);
+  console.log('chartInfo:', chartInfo);
+  
+  autofitCheckbox.checked = style.autofit;
+  autofitLabel.classList.toggle('red', chartInfo.isPartiallyOnScreen);
   outputEl.innerHTML = `${data.length} data points drawn.`;
   
   let dataUrl = canvas.toDataURL('image/png');
