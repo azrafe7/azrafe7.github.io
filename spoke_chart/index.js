@@ -1,7 +1,7 @@
 'use strict';
 
-const STYLE_DEFAULTS = { width:500, height:500, lineWidth:2, spokeColor:'rgb(255, 0, 0)', circleColor:'#000',
-                         bigCircleColor:'#74FBEA', bigCircleLineWidth:10,
+const STYLE_DEFAULTS = { width:500, height:500, lineWidth:2, /*autofit:false,*/
+                         spokeColor:'rgb(255, 0, 0)', circleColor:'#000', bigCircleColor:'#74FBEA', bigCircleLineWidth:10,
                          spokeLength:180, spokeFont:'bold 16px sans-serif', circleFont:'14px sans-serif', backgroundColor: 'white' };
 
 const DEFAULT_SPOKE_LABELS = [
@@ -46,6 +46,7 @@ responseA.style = {...STYLE_DEFAULTS, ...responseA.style};
 let textA = document.querySelector('#textA');
 let canvas = document.querySelector('canvas#chart');
 
+let downloadButton = document.querySelector('#download-button');
 let updateButton = document.querySelector('#update-button');
 let formatButton = document.querySelector('#format-button');
 let randomizeButton = document.querySelector('#randomize-button');
@@ -364,6 +365,9 @@ function updateChart() {
   let style = res.style;
   createSpokeChart(canvas, data, style);
   outputEl.innerHTML = `${data.length} data points drawn.`;
+  
+  let dataUrl = canvas.toDataURL('image/png');
+  downloadButton.href = dataUrl;
 }
 
 setupEventListeners();
