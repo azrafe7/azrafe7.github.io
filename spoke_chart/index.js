@@ -141,13 +141,48 @@ function RGBAFromArray(rgba) {
   return `rgb(${rgba.join(', ')})`;
 }
 
+// get length from value normalized in range [min, max]
 function getLengthValue(value, min, max, maxLength) {
   const stepLength = maxLength / (max - min);
   value = Math.min(Math.max(value, min), max); // contrain value in range [min, max]
   return (value - min) * stepLength;
 }
 
+
 function createSpokeChart(canvas, data, style={}) {
+  
+  // compute values once
+  function getComputedData(data, style) {
+    let computedData = [];
+
+    let i = 0;
+    for (let entry of data) {
+      let cos = Math.cos(startAngle + angleStep * i);
+      let sin = Math.sin(startAngle + angleStep * i);
+
+      let distance = 0;
+      if (entry.hasOwnProperty('distance')) {
+        distance = style.spokeLength - getLengthValue(entry.distance, MIN_DISTANCE_VALUE, MAX_DISTANCE_VALUE, style.spokeLength);
+      }
+      if (entry.hasOwnProperty('distancePx')) {
+        distance = style.spokeLength - entry.distancePx;
+      }
+      
+      let radius = 0;
+      if (entry.hasOwnProperty('radius')) {
+        radius = getLengthValue(entry.radius, MIN_DISTANCE_VALUE, MAX_DISTANCE_VALUE, style.spokeLength);
+        radius = Math.max(radius, 1); // ensure a dot is shown if radius is 0
+      }
+      if (entry.hasOwnProperty('radiusPx')) {
+        radius = entry.radiusPx;
+      }
+      
+      computedData.push({distance:distance, radius:radius, cos:cos, sin:sin});
+      i++;
+    }
+    return computedData;
+  }
+
   const defaults = STYLE_DEFAULTS;
   style = { ...defaults, ...style };
   canvas.width = style.width;
@@ -162,6 +197,8 @@ function createSpokeChart(canvas, data, style={}) {
   let dataLength = data.length;
   let angleStep = (2 * Math.PI) / dataLength;
   let startAngle = -Math.PI / 2;
+
+  let computedData = getComputedData(data, style);
 
   // fill background color
   ctx.fillStyle = style.backgroundColor;
@@ -180,8 +217,7 @@ function createSpokeChart(canvas, data, style={}) {
   let i = 0;
   for (let entry of data) {
 
-    let cos = Math.cos(startAngle + angleStep * i);
-    let sin = Math.sin(startAngle + angleStep * i);
+    let computedEntry = computedData[i];
 
     ctx.lineWidth = style.lineWidth;
 
@@ -189,7 +225,7 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.beginPath();
     ctx.strokeStyle = style.spokeColor;
     ctx.moveTo(centerPt.x, centerPt.y);
-    ctx.lineTo(centerPt.x + style.spokeLength * cos, centerPt.y + style.spokeLength * sin);
+    ctx.lineTo(centerPt.x + style.spokeLength * computedEntry.cos, centerPt.y + style.spokeLength * computedEntry.sin);
     ctx.stroke();
     ctx.closePath();
 
@@ -202,7 +238,7 @@ function createSpokeChart(canvas, data, style={}) {
     let distanceColor = RGBAFromArray(rgba);
     ctx.strokeStyle = distanceColor;
     ctx.moveTo(centerPt.x, centerPt.y);
-    ctx.lineTo(centerPt.x + entry.distance * cos, centerPt.y + entry.distance * sin);
+    ctx.lineTo(centerPt.x + entry.distance * computedEntry.cos, centerPt.y + entry.distance * computedEntry.sin);
     // ctx.stroke();
     ctx.closePath();
 
@@ -213,6 +249,8 @@ function createSpokeChart(canvas, data, style={}) {
   i = 0;
   for (let entry of data) {
 
+    let computedEntry = computedData[i];
+
     let cos = Math.cos(startAngle + angleStep * i);
     let sin = Math.sin(startAngle + angleStep * i);
 
@@ -221,25 +259,10 @@ function createSpokeChart(canvas, data, style={}) {
     // circles
     ctx.beginPath();
     ctx.strokeStyle = style.circleColor;
-    let distance = 0;
-    if (entry.hasOwnProperty('distance')) {
-      distance = style.spokeLength - getLengthValue(entry.distance, MIN_DISTANCE_VALUE, MAX_DISTANCE_VALUE, style.spokeLength);
-    }
-    if (entry.hasOwnProperty('distancePx')) {
-      distance = style.spokeLength - entry.distancePx;
-    }
-    let radius = 0;
-    if (entry.hasOwnProperty('radius')) {
-      radius = getLengthValue(entry.radius, MIN_DISTANCE_VALUE, MAX_DISTANCE_VALUE, style.spokeLength);
-      radius = Math.max(radius, 1); // ensure a dot is shown if radius is 0
-    }
-    if (entry.hasOwnProperty('radiusPx')) {
-      radius = entry.radiusPx;
-    }
-    let circleCenterPt = {x:centerPt.x + distance * cos, y:centerPt.y + distance * sin};
-    let circleStartPt = {x:circleCenterPt.x + radius, y:circleCenterPt.y};
+    let circleCenterPt = {x:centerPt.x + computedEntry.distance * computedEntry.cos, y:centerPt.y + computedEntry.distance * computedEntry.sin};
+    let circleStartPt = {x:circleCenterPt.x + computedEntry.radius, y:circleCenterPt.y};
     ctx.moveTo(circleStartPt.x, circleStartPt.y);
-    ctx.arc(circleCenterPt.x, circleCenterPt.y, radius, 0, Math.PI * 2, true)
+    ctx.arc(circleCenterPt.x, circleCenterPt.y, computedEntry.radius, 0, Math.PI * 2, true)
     ctx.stroke();
     ctx.closePath();
 
@@ -272,7 +295,7 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.lineWidth = 2;
     ctx.font = style.circleFont;
     // let circleLabelPt = {x:circleStartPt.x + CIRCLE_TEXT_GAP, y:circleStartPt.y};
-    let circleLabelPt = {x:circleCenterPt.x + (CIRCLE_TEXT_GAP + entry.radius) * cos, y:circleCenterPt.y + (CIRCLE_TEXT_GAP + entry.radius) * sin};
+    let circleLabelPt = {x:circleCenterPt.x + (CIRCLE_TEXT_GAP + entry.radius) * computedEntry.cos, y:circleCenterPt.y + (CIRCLE_TEXT_GAP + entry.radius) * computedEntry.sin};
     // ctx.strokeText(`${entry.radius.toFixed(PRECISION)}`, circleLabelPt.x, circleLabelPt.y);
     // ctx.fillText(`${entry.radius.toFixed(PRECISION)}`, circleLabelPt.x, circleLabelPt.y);
 
@@ -283,8 +306,7 @@ function createSpokeChart(canvas, data, style={}) {
   i = 0;
   for (let entry of data) {
 
-    let cos = Math.cos(startAngle + angleStep * i);
-    let sin = Math.sin(startAngle + angleStep * i);
+    let computedEntry = computedData[i];
 
     ctx.lineWidth = 1;
 
@@ -294,9 +316,9 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.strokeStyle = style.backgroundColor;
     ctx.fillStyle = style.spokeColor;
     ctx.font = style.spokeFont;
-    const spokeEndPt = {x:centerPt.x + style.spokeLength * cos, y:centerPt.y + style.spokeLength * sin};
+    const spokeEndPt = {x:centerPt.x + style.spokeLength * computedEntry.cos, y:centerPt.y + style.spokeLength * computedEntry.sin};
     const spokeLengthFactor = 1
-    let spokeLabelPt = {x:centerPt.x + (AXIS_TEXT_GAP + style.spokeLength * spokeLengthFactor) * cos, y:centerPt.y + (AXIS_TEXT_GAP + style.spokeLength * spokeLengthFactor) * sin};
+    let spokeLabelPt = {x:centerPt.x + (AXIS_TEXT_GAP + style.spokeLength * spokeLengthFactor) * computedEntry.cos, y:centerPt.y + (AXIS_TEXT_GAP + style.spokeLength * spokeLengthFactor) * computedEntry.sin};
     if (entry.labelPt) spokeLabelPt = {x:spokeEndPt.x + entry.labelPt.x, y:spokeEndPt.y + entry.labelPt.y};
     ctx.strokeText(`${entry.label}`, spokeLabelPt.x, spokeLabelPt.y);
     ctx.fillText(`${entry.label}`, spokeLabelPt.x, spokeLabelPt.y);
@@ -307,7 +329,7 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.strokeStyle = style.backgroundColor;
     ctx.fillStyle = style.spokeColor;
     ctx.font = style.spokeFont;
-    let spokeLabelEndPt = {x:centerPt.x + (AXIS_TEXT_GAP + style.spokeLength * spokeLengthFactor) * cos, y:centerPt.y + (AXIS_TEXT_GAP + style.spokeLength * spokeLengthFactor) * sin};
+    let spokeLabelEndPt = {x:centerPt.x + (AXIS_TEXT_GAP + style.spokeLength * spokeLengthFactor) * computedEntry.cos, y:centerPt.y + (AXIS_TEXT_GAP + style.spokeLength * spokeLengthFactor) * computedEntry.sin};
     ctx.strokeText("" + MIN_DISTANCE_VALUE, spokeLabelEndPt.x, spokeLabelEndPt.y);
     ctx.fillText("" + MIN_DISTANCE_VALUE, spokeLabelEndPt.x, spokeLabelEndPt.y);
     
