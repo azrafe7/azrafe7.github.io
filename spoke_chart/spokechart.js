@@ -35,7 +35,7 @@ function getRandomizedChartValues(options={}) {
   style.spokeLength = +(style.width * .4).toFixed(2);
   let randomizeColor = options.randomizeColor;
   if (randomizeColor) {
-    style.spokeColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16) + '80';
+    style.spokeColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16); // + '80';
     style.circleColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
     style.bigCircleColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
   }
