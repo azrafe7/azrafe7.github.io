@@ -1,6 +1,6 @@
 'use strict';
 
-const STYLE_DEFAULTS = { width:500, height:500, lineWidth:2, /*autofit:false,*/
+const STYLE_DEFAULTS = { width:500, height:500, lineWidth:2, autofit:false,
                          spokeColor:'rgb(255, 0, 0)', circleColor:'#000', bigCircleColor:'#74FBEA', bigCircleLineWidth:10,
                          spokeLength:180, spokeFont:'bold 16px sans-serif', circleFont:'14px sans-serif', backgroundColor: 'white' };
 
@@ -52,6 +52,8 @@ let formatButton = document.querySelector('#format-button');
 let randomizeButton = document.querySelector('#randomize-button');
 let randomizeCheckbox = document.querySelector('#randomize-check');
 let randomizeLabel = document.querySelector('label[for="randomize-check"]');
+let autofitCheckbox = document.querySelector('#autofit-check');
+let autofitLabel = document.querySelector('label[for="autofit-check"]');
 
 let outputEl = document.querySelector('#output');
 
@@ -61,12 +63,13 @@ let outputEl = document.querySelector('#output');
 textA.value = JSON.stringify(responseA, undefined, '  ');
 
 function getRandomizedChartValues(options={}) {
-  let defaultOptions = {randomizeColor:false};
+  let defaultOptions = {randomizeColor:false, autofit:false};
   options = {...defaultOptions, ...options};
   
   let style = {};
   style.width = 400 + parseInt(Math.random() * 400);
   style.height = 400 + parseInt(Math.random() * 200);
+  style.autofit = options.autofit;
   style.spokeLength = +(style.width * .4).toFixed(2);
   let randomizeColor = options.randomizeColor;
   if (randomizeColor) {
@@ -103,7 +106,7 @@ function setupEventListeners() {
   });
 
   randomizeButton.addEventListener('click', (evt) => {
-    let {data, style} = getRandomizedChartValues({randomizeColor:randomizeCheckbox.checked});
+    let {data, style} = getRandomizedChartValues({randomizeColor:randomizeCheckbox.checked, autofit:autofitCheckbox.checked});
     
     responseA = {
       data: data,
@@ -115,6 +118,14 @@ function setupEventListeners() {
     updateChart();
   });
 
+  autofitCheckbox.addEventListener('change', (evt) => {
+    responseA.style.autofit = autofitCheckbox.checked;
+
+    textA.value = JSON.stringify(responseA);
+    formatButton.click();
+    updateChart();
+  });
+  
   updateButton.addEventListener('click', (evt) => {
     updateChart();
   });
@@ -231,17 +242,17 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.closePath();
 
     // distance lines
-    ctx.lineWidth = style.lineWidth + 1.5;
+    /* ctx.lineWidth = style.lineWidth + 1.5;
     ctx.beginPath();
     let rgba = getRGBA(style.spokeColor).rgba;
     if (rgba.length == 3) rgba.push(1);
     rgba[3] = 1;
     let distanceColor = RGBAFromArray(rgba);
     ctx.strokeStyle = distanceColor;
-    ctx.moveTo(centerPt.x, centerPt.y);
-    ctx.lineTo(centerPt.x + entry.distance * computedEntry.cos, centerPt.y + entry.distance * computedEntry.sin);
-    // ctx.stroke();
-    ctx.closePath();
+    ctx.moveTo(centerPt.x + style.spokeLength * computedEntry.cos, centerPt.y + style.spokeLength * computedEntry.sin);
+    ctx.lineTo(centerPt.x + computedEntry.distance * computedEntry.cos, centerPt.y + computedEntry.distance * computedEntry.sin);
+    ctx.stroke();
+    ctx.closePath(); */
 
     i++;
   }
