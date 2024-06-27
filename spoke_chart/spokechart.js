@@ -137,8 +137,8 @@ function createSpokeChart(canvas, data, style={}) {
     let scale = Math.min(xScale, yScale);
     autofitStyle.spokeLength = (style.spokeLength * scale) - CHART_PADDING;
     
-    console.log('currStyle:', style);
-    console.log('scale:', scale, 'autofitStyle:', autofitStyle);
+    // console.log('currStyle:', style);
+    // console.log('scale:', scale, 'autofitStyle:', autofitStyle);
     
     return {computedData, autofitStyle};
   }

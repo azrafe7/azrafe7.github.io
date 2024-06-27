@@ -99,7 +99,7 @@ function updateChart() {
   let data = res.data;
   let style = res.style;
   let chartInfo = createSpokeChart(canvas, data, style);
-  console.log('chartInfo:', chartInfo);
+  // console.log('chartInfo:', chartInfo);
   
   autofitCheckbox.checked = style.autofit;
   autofitLabel.classList.toggle('red', chartInfo.isPartiallyOnScreen);
