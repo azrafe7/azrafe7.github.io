@@ -117,6 +117,13 @@ function setupEventListeners() {
   updateButton.addEventListener('click', (evt) => {
     updateChart();
   });
+  
+  document.addEventListener('keydown', (evt) => {
+    if ((evt.ctrlKey || evt.metaKey) && (evt.keyCode == 13 || evt.keyCode == 10)) {
+      // Command + Enter or Ctrl + Enter pressed
+      updateChart();
+    }
+  });
 }
 
 function getRGBA(htmlColor) {
