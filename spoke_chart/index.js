@@ -20,15 +20,17 @@ const DEFAULT_SPOKE_LABELS_PTS = [ // relative to end of spoke
   {x:15, y:-5},
 ]
 
-const MAX_SPOKE_VALUE = 10;
+const MIN_DISTANCE_VALUE = 1;
+const MAX_DISTANCE_VALUE = 10;
+
 
 let responseA = {
   data: [
-    {distance: 100, radius:30, label:'Safety', labelPt:DEFAULT_SPOKE_LABELS_PTS[0]},
-    {distance: 50, radius:10, label:'Climate', labelPt:DEFAULT_SPOKE_LABELS_PTS[1]},
-    {distance: 60, radius:30, label:'Attainment', labelPt:DEFAULT_SPOKE_LABELS_PTS[2]},
-    {distance: 90, radius:50, label:'Leadership', labelPt:DEFAULT_SPOKE_LABELS_PTS[3]},
-    {distance: 110, radius:50, label:'Engagement', labelPt:DEFAULT_SPOKE_LABELS_PTS[4]},
+    {distance: 5, radius:30, label:'Safety', labelPt:DEFAULT_SPOKE_LABELS_PTS[0]},
+    {distance: 6, radius:10, label:'Climate', labelPt:DEFAULT_SPOKE_LABELS_PTS[1]},
+    {distance: 7, radius:30, label:'Attainment', labelPt:DEFAULT_SPOKE_LABELS_PTS[2]},
+    {distance: 5, radius:50, label:'Leadership', labelPt:DEFAULT_SPOKE_LABELS_PTS[3]},
+    {distance: 4, radius:50, label:'Engagement', labelPt:DEFAULT_SPOKE_LABELS_PTS[4]},
   ],
   style: {
     width:500,
@@ -60,6 +62,7 @@ textA.value = JSON.stringify(responseA, undefined, '  ');
 function getRandomizedChartValues(options={}) {
   let defaultOptions = {randomizeColor:false};
   options = {...defaultOptions, ...options};
+  
   let style = {};
   style.width = 400 + parseInt(Math.random() * 400);
   style.height = 400 + parseInt(Math.random() * 200);
@@ -80,7 +83,7 @@ function getRandomizedChartValues(options={}) {
   let data = [];
   for (let d = 0; d < dataLength; d++) {
     let entry = {};
-    entry.distance = +(Math.random() * style.spokeLength).toFixed(2);
+    entry.distance = +(MIN_DISTANCE_VALUE + Math.random() * (MAX_DISTANCE_VALUE - MIN_DISTANCE_VALUE)).toFixed(2);
     entry.radius = +(Math.random() * style.spokeLength * .8).toFixed(2);
     entry.label = DEFAULT_SPOKE_LABELS[d % DEFAULT_SPOKE_LABELS.length];
     if (dataLength == DEFAULT_SPOKE_LABELS_PTS.length) entry.labelPt = DEFAULT_SPOKE_LABELS_PTS[d % DEFAULT_SPOKE_LABELS_PTS.length];
@@ -129,6 +132,12 @@ function getRGBA(htmlColor) {
 
 function RGBAFromArray(rgba) {
   return `rgb(${rgba.join(', ')})`;
+}
+
+function getLengthValue(value, min, max, maxLength) {
+  const stepLength = maxLength / (max - min);
+  value = Math.min(Math.max(value, min), max); // contrain value in range [min, max]
+  return (value - min) * stepLength;
 }
 
 function createSpokeChart(canvas, data, style={}) {
@@ -205,7 +214,8 @@ function createSpokeChart(canvas, data, style={}) {
     // circles
     ctx.beginPath();
     ctx.strokeStyle = style.circleColor;
-    let circleCenterPt = {x:centerPt.x + entry.distance * cos, y:centerPt.y + entry.distance * sin};
+    let distance = style.spokeLength - getLengthValue(entry.distance, MIN_DISTANCE_VALUE, MAX_DISTANCE_VALUE, style.spokeLength);
+    let circleCenterPt = {x:centerPt.x + distance * cos, y:centerPt.y + distance * sin};
     let circleStartPt = {x:circleCenterPt.x + entry.radius, y:circleCenterPt.y};
     ctx.moveTo(circleStartPt.x, circleStartPt.y);
     ctx.arc(circleCenterPt.x, circleCenterPt.y, entry.radius, 0, Math.PI * 2, true)
@@ -277,16 +287,16 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.fillStyle = style.spokeColor;
     ctx.font = style.spokeFont;
     let spokeLabelEndPt = {x:centerPt.x + (AXIS_TEXT_GAP + style.spokeLength * spokeLengthFactor) * cos, y:centerPt.y + (AXIS_TEXT_GAP + style.spokeLength * spokeLengthFactor) * sin};
-    ctx.strokeText("0", spokeLabelEndPt.x, spokeLabelEndPt.y);
-    ctx.fillText("0", spokeLabelEndPt.x, spokeLabelEndPt.y);
+    ctx.strokeText("" + MIN_DISTANCE_VALUE, spokeLabelEndPt.x, spokeLabelEndPt.y);
+    ctx.fillText("" + MIN_DISTANCE_VALUE, spokeLabelEndPt.x, spokeLabelEndPt.y);
     
     if (i == 0) {
       ctx.lineWidth = 2;
       ctx.textAlign = 'center';
       ctx.textBaseline='middle';
       let spokeLabelStartPt = {x:centerPt.x + AXIS_TEXT_GAP, y:centerPt.y + 5};
-      ctx.strokeText("" + MAX_SPOKE_VALUE, centerPt.x, centerPt.y);
-      ctx.fillText("" + MAX_SPOKE_VALUE, centerPt.x, centerPt.y);
+      ctx.strokeText("" + MAX_DISTANCE_VALUE, centerPt.x, centerPt.y);
+      ctx.fillText("" + MAX_DISTANCE_VALUE, centerPt.x, centerPt.y);
     }
     
     i++;
