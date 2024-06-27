@@ -2,7 +2,7 @@
 
 const STYLE_DEFAULTS = { width:500, height:500, lineWidth:2, spokeColor:'rgb(255, 0, 0)', circleColor:'#000',
                          bigCircleColor:'#74FBEA', bigCircleLineWidth:10,
-                         spokeLength:180, spokeFont:'bold 14px monospace', circleFont:'12px monospace', backgroundColor: 'white' };
+                         spokeLength:180, spokeFont:'bold 16px sans-serif', circleFont:'14px sans-serif', backgroundColor: 'white' };
 
 const DEFAULT_SPOKE_LABELS = [
   'Safety',
@@ -19,6 +19,8 @@ const DEFAULT_SPOKE_LABELS_PTS = [ // relative to end of spoke
   {x:20, y:0},
   {x:15, y:-5},
 ]
+
+const MAX_SPOKE_VALUE = 10;
 
 let responseA = {
   data: [
@@ -128,7 +130,7 @@ function createSpokeChart(canvas, data, style={}) {
   canvas.width = style.width;
   canvas.height = style.height;
 
-  const AXIS_TEXT_GAP = 18;
+  const AXIS_TEXT_GAP = 10;
   const CIRCLE_TEXT_GAP = 10;
   const PRECISION = 0;
 
@@ -260,6 +262,25 @@ function createSpokeChart(canvas, data, style={}) {
     if (entry.labelPt) spokeLabelPt = {x:spokeEndPt.x + entry.labelPt.x, y:spokeEndPt.y + entry.labelPt.y};
     ctx.strokeText(`${entry.label}`, spokeLabelPt.x, spokeLabelPt.y);
     ctx.fillText(`${entry.label}`, spokeLabelPt.x, spokeLabelPt.y);
+    
+    // spoke labels start/end
+    ctx.textAlign = 'center';
+    ctx.textBaseline='middle';
+    ctx.strokeStyle = style.backgroundColor;
+    ctx.fillStyle = style.spokeColor;
+    ctx.font = style.spokeFont;
+    let spokeLabelEndPt = {x:centerPt.x + (AXIS_TEXT_GAP + style.spokeLength * spokeLengthFactor) * cos, y:centerPt.y + (AXIS_TEXT_GAP + style.spokeLength * spokeLengthFactor) * sin};
+    ctx.strokeText("0", spokeLabelEndPt.x, spokeLabelEndPt.y);
+    ctx.fillText("0", spokeLabelEndPt.x, spokeLabelEndPt.y);
+    
+    if (i == 0) {
+      ctx.lineWidth = 2;
+      ctx.textAlign = 'center';
+      ctx.textBaseline='middle';
+      let spokeLabelStartPt = {x:centerPt.x + AXIS_TEXT_GAP, y:centerPt.y + 5};
+      ctx.strokeText("" + MAX_SPOKE_VALUE, centerPt.x, centerPt.y);
+      ctx.fillText("" + MAX_SPOKE_VALUE, centerPt.x, centerPt.y);
+    }
     
     i++;
   }
