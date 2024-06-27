@@ -251,9 +251,6 @@ function createSpokeChart(canvas, data, style={}) {
 
     let computedEntry = computedData[i];
 
-    let cos = Math.cos(startAngle + angleStep * i);
-    let sin = Math.sin(startAngle + angleStep * i);
-
     ctx.lineWidth = style.lineWidth;
 
     // circles
@@ -267,14 +264,14 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.closePath();
 
     // circle ticks
-    ctx.beginPath()
+    /* ctx.beginPath()
     ctx.moveTo(circleStartPt.x, circleStartPt.y);
-    // ctx.lineTo(circleStartPt.x + CIRCLE_TEXT_GAP * .7, circleStartPt.y);
+    ctx.lineTo(circleStartPt.x + CIRCLE_TEXT_GAP * .7, circleStartPt.y);
     ctx.stroke();
-    ctx.closePath()
+    ctx.closePath() */
 
     // distance labels
-    ctx.textAlign = 'center';
+    /* ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
     ctx.strokeStyle = style.circleColor;
     ctx.fillStyle = 'white';
@@ -283,12 +280,12 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.save();
     ctx.translate(circleCenterPt.x, circleCenterPt.y);
     ctx.rotate(Math.PI + startAngle + angleStep * i);
-    // ctx.strokeText(`${entry.distance.toFixed(PRECISION)}`, 0, -style.lineWidth / 2 - 1);
-    // ctx.fillText(`${entry.distance.toFixed(PRECISION)}`, 0, -style.lineWidth / 2 - 1);
-    ctx.restore();
+    ctx.strokeText(`${entry.distance.toFixed(PRECISION)}`, 0, -style.lineWidth / 2 - 1);
+    ctx.fillText(`${entry.distance.toFixed(PRECISION)}`, 0, -style.lineWidth / 2 - 1);
+    ctx.restore(); */
 
     // circle labels
-    ctx.textAlign = 'center';
+    /* ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.strokeStyle = style.circleColor;
     ctx.fillStyle = 'white';
@@ -296,8 +293,8 @@ function createSpokeChart(canvas, data, style={}) {
     ctx.font = style.circleFont;
     // let circleLabelPt = {x:circleStartPt.x + CIRCLE_TEXT_GAP, y:circleStartPt.y};
     let circleLabelPt = {x:circleCenterPt.x + (CIRCLE_TEXT_GAP + entry.radius) * computedEntry.cos, y:circleCenterPt.y + (CIRCLE_TEXT_GAP + entry.radius) * computedEntry.sin};
-    // ctx.strokeText(`${entry.radius.toFixed(PRECISION)}`, circleLabelPt.x, circleLabelPt.y);
-    // ctx.fillText(`${entry.radius.toFixed(PRECISION)}`, circleLabelPt.x, circleLabelPt.y);
+    ctx.strokeText(`${entry.radius.toFixed(PRECISION)}`, circleLabelPt.x, circleLabelPt.y);
+    ctx.fillText(`${entry.radius.toFixed(PRECISION)}`, circleLabelPt.x, circleLabelPt.y); */
 
     i++;
   }
@@ -319,9 +316,10 @@ function createSpokeChart(canvas, data, style={}) {
     const spokeEndPt = {x:centerPt.x + style.spokeLength * computedEntry.cos, y:centerPt.y + style.spokeLength * computedEntry.sin};
     const spokeLengthFactor = 1
     let spokeLabelPt = {x:centerPt.x + (AXIS_TEXT_GAP + style.spokeLength * spokeLengthFactor) * computedEntry.cos, y:centerPt.y + (AXIS_TEXT_GAP + style.spokeLength * spokeLengthFactor) * computedEntry.sin};
-    if (entry.labelPt) spokeLabelPt = {x:spokeEndPt.x + entry.labelPt.x, y:spokeEndPt.y + entry.labelPt.y};
-    ctx.strokeText(`${entry.label}`, spokeLabelPt.x, spokeLabelPt.y);
-    ctx.fillText(`${entry.label}`, spokeLabelPt.x, spokeLabelPt.y);
+    if (entry.labelPt != null) spokeLabelPt = {x:spokeEndPt.x + entry.labelPt.x, y:spokeEndPt.y + entry.labelPt.y};
+    let spokeLabel = entry.label ?? `axis ${i}`;
+    ctx.strokeText(spokeLabel, spokeLabelPt.x, spokeLabelPt.y);
+    ctx.fillText(spokeLabel, spokeLabelPt.x, spokeLabelPt.y);
     
     // spoke labels start/end
     ctx.textAlign = 'center';
