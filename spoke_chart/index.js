@@ -113,7 +113,7 @@ function updateChart() {
   autofitCheckbox.checked = style.autofit;
   autofitLabel.classList.toggle('red', chartInfo.isPartiallyOnScreen);
   autofitLabel.classList.toggle('green', !chartInfo.isPartiallyOnScreen);
-  outputEl.innerHTML = `${data.length} data points drawn.`;
+  outputEl.innerHTML = `${data.length} data points drawn (isPartiallyOnScreen:<b>${chartInfo.isPartiallyOnScreen}</b>).`;
   
   let dataUrl = canvas.toDataURL('image/png');
   downloadButton.href = dataUrl;
