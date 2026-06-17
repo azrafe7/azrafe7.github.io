@@ -101,6 +101,11 @@ a {
   border-color: var(--accent);
 }
 
+.header__name:hover .folder {
+  text-decoration: underline;
+  filter: brightness(125%);
+}
+
 /* Grid */
 
 .grid {
