@@ -4,27 +4,27 @@
 
 const PROJECTS = [
   {
-    name: "Project One",
-    description: "A short, plain-language sentence about what this project does and why it exists.",
-    image: "https://placehold.co/640x420/1a1a1a/fafaf8?text=Project+One",
-    url: "https://github.com/yourusername/project-one"
+    name: "Spoke Chart",
+    description: "Customizable spoke chart in plain JS.",
+    image: "assets/spoke_chart.png",
+    url: "https://azrafe7.github.io/spoke_chart/"
   },
   {
-    name: "Project Two",
-    description: "Another brief description. One or two sentences is plenty here.",
-    image: "https://placehold.co/640x420/1a1a1a/fafaf8?text=Project+Two",
-    url: "https://github.com/yourusername/project-two"
+    name: "Worldle Web",
+    description: "A multilanguage wordle clone built with Flutter (this one is a web prototype).",
+    image: "assets/worldle_web.png",
+    url: "https://azrafe7.github.io/worldle_web/"
   },
   {
-    name: "Project Three",
-    description: "Keep descriptions short — the screenshot and name do most of the work.",
-    image: "https://placehold.co/640x420/1a1a1a/fafaf8?text=Project+Three",
-    url: "https://github.com/yourusername/project-three"
+    name: "JSON compare",
+    description: "Compare JSON responses (with format and strict compare).",
+    image: "assets/compare_json.png",
+    url: "https://azrafe7.github.io/cmp_response/"
   },
   {
-    name: "Project Four",
-    description: "Swap this out for your real project once it's ready to show.",
-    image: "https://placehold.co/640x420/1a1a1a/fafaf8?text=Project+Four",
-    url: "https://github.com/yourusername/project-four"
+    name: "hxGeomAlgo",
+    description: "Small collection of computational geometry algorithms in Haxe.",
+    image: "assets/hxGeomAlgo.png",
+    url: "https://azrafe7.github.io/hxGeomAlgo/index.html"
   }
 ];
