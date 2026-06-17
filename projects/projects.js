@@ -3,6 +3,14 @@
 // "url" is where the card links when clicked.
 
 const PROJECTS = [
+  /*
+  {
+    name: "template",
+    description: "short desc.",
+    image: "assets/image.png",
+    url: "https://azrafe7.github.io/"
+  },
+  */
   {
     name: "Spoke Chart",
     description: "Customizable spoke chart in plain JS.",
@@ -26,5 +34,11 @@ const PROJECTS = [
     description: "Small collection of computational geometry algorithms in Haxe.",
     image: "assets/hxGeomAlgo.png",
     url: "https://azrafe7.github.io/hxGeomAlgo/index.html"
+  },
+  {
+    name: "hxDelaunay",
+    description: "Delaunay triangulations, Voronoi, convex hull and more. Ported to Haxe 3 from https://github.com/sledorze/hxDelaunay (itself a port of the excellent https://github.com/nodename/as3delaunay).",
+    image: "assets/hxDelaunay.png",
+    url: "https://htmlpreview.github.io/?https://raw.githubusercontent.com/azrafe7/hxDelaunay/refs/heads/master/bin/html5/bin/index.html"
   }
 ];
