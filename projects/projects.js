@@ -108,9 +108,15 @@ const PROJECTS = [
     url: "https://addons.mozilla.org/it/firefox/addon/vlc-4-youtube-beta-4-firefox/"
   },
   {
-    name: "template",
-    description: "short desc.",
-    image: "assets/image.png",
-    url: "https://azrafe7.github.io/"
+    name: "PDF Redactor",
+    description: "A FastAPI service that redacts sections of PDFs using PyMuPDF, with a clean HTML frontend.",
+    image: "assets/PDF Redactor.png",
+    url: "https://pdf-redact-hgoj.onrender.com/"
+  },
+  {
+    name: "RSA Finder - Toscana",
+    description: "Find/search/filter/visualize RSA facilities in Toscana (with map and real data).",
+    image: "assets/RSA Finder.png",
+    url: "https://rsa-finder-toscana.onrender.com/"
   },
 ];

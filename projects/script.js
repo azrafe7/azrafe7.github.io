@@ -1,5 +1,7 @@
 (function () {
 
+  const SHUFFLE_PROJECTS = true;
+
   // https://bost.ocks.org/mike/shuffle/
   // https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
   function shuffle(array) {
@@ -47,7 +49,6 @@
     });
   }
 
-  render(PROJECTS);
-  //render(shuffle(PROJECTS));
-
+  console.log(`Shuffle projects: ${SHUFFLE_PROJECTS}`);
+  render(SHUFFLE_PROJECTS ? shuffle(PROJECTS) : PROJECTS);
 })();
