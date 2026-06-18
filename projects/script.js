@@ -1,6 +1,6 @@
 (function () {
 
-  const SHUFFLE_PROJECTS = false;
+  const SHUFFLE_PROJECTS = true;
 
   // Small inline icon for the "view source" repo link.
   const REPO_ICON = `
