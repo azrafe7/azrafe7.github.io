@@ -134,11 +134,16 @@ a {
 
 .card__frame {
   display: block;
+  position: relative;
   border: 1px solid var(--line);
   overflow: hidden;
   aspect-ratio: 4 / 3;
   background: #fff;
   transition: border-color 0.15s ease;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
 }
 
 .card__frame:focus-visible {
@@ -153,6 +158,8 @@ a {
   display: block;
   filter: grayscale(75%);
   transition: filter 0.2s ease, transform 0.3s ease;
+  pointer-events: none;
+  -webkit-user-drag: none;
 }
 
 .card__frame:hover {
@@ -162,6 +169,44 @@ a {
 .card__frame:hover .card__image {
   filter: grayscale(0%);
   transform: scale(1.02);
+}
+
+.card__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: rgba(250, 250, 248, 0.85);
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+.card__arrow--prev {
+  left: 8px;
+}
+
+.card__arrow--next {
+  right: 8px;
+}
+
+.card__frame:hover .card__arrow,
+.card__frame:focus-visible .card__arrow {
+  opacity: 1;
+}
+
+.card__arrow:hover {
+  background: var(--accent);
+  color: #fff;
 }
 
 /* Image dots (only present when a project has more than one screenshot) */

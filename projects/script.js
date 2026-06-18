@@ -53,14 +53,20 @@
           ).join('')}</div>`
         : '';
 
+      const arrows = images.length > 1
+        ? `<button class="card__arrow card__arrow--prev" data-dir="-1" aria-label="Previous screenshot">‹</button>
+           <button class="card__arrow card__arrow--next" data-dir="1" aria-label="Next screenshot">›</button>`
+        : '';
+
       const repoLink = project.repo
         ? `<a class="card__repo" href="${project.repo}" target="_blank" rel="noopener" aria-label="View source" title="View source">${REPO_ICON}</a>`
         : '';
 
       card.innerHTML = `
         <span class="card__index">${num} / ${total}</span>
-        <a class="card__frame" href="${project.url}" target="_blank" rel="noopener">
+        <a class="card__frame" href="${project.url}" target="_blank" rel="noopener" tabindex="0">
           <img class="card__image" src="${images[0]}" alt="${project.name}" loading="lazy">
+          ${arrows}
         </a>
         ${dots}
         <div class="card__head">
@@ -70,19 +76,97 @@
         <p class="card__desc">${project.description}</p>
       `;
 
-      // Wire up dot navigation to swap the screenshot without leaving the page.
+      // Wire up dot navigation, arrows, swipe, and keyboard to switch
+      // screenshots without leaving the page.
       if (images.length > 1) {
+        const frame = card.querySelector('.card__frame');
         const img = card.querySelector('.card__image');
         const dotEls = card.querySelectorAll('.card__dot');
+        const arrowEls = card.querySelectorAll('.card__arrow');
+        let current = 0;
+
+        function goTo(idx) {
+          current = ((idx % images.length) + images.length) % images.length;
+          img.src = images[current];
+          dotEls.forEach((d) => d.classList.remove('is-active'));
+          dotEls[current].classList.add('is-active');
+        }
 
         dotEls.forEach((dot) => {
           dot.addEventListener('click', (e) => {
             e.preventDefault();
-            const idx = Number(dot.dataset.index);
-            img.src = images[idx];
-            dotEls.forEach((d) => d.classList.remove('is-active'));
-            dot.classList.add('is-active');
+            goTo(Number(dot.dataset.index));
           });
+        });
+
+        arrowEls.forEach((arrow) => {
+          arrow.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            goTo(current + Number(arrow.dataset.dir));
+          });
+        });
+
+        // Swipe handling. Tracks horizontal drag distance and only treats it
+        // as a swipe past a small threshold, so taps still work as clicks.
+        const SWIPE_THRESHOLD = 40;
+        let startX = 0;
+        let startY = 0;
+        let deltaX = 0;
+        let isSwipe = false;
+        let dragging = false;
+
+        function onPointerDown(e) {
+          dragging = true;
+          isSwipe = false;
+          startX = e.clientX;
+          startY = e.clientY;
+          deltaX = 0;
+        }
+
+        function onPointerMove(e) {
+          if (!dragging) return;
+          deltaX = e.clientX - startX;
+          const deltaY = e.clientY - startY;
+          if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
+            isSwipe = true;
+          }
+        }
+
+        function onPointerUp() {
+          if (!dragging) return;
+          dragging = false;
+          if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
+            if (deltaX < 0) {
+              goTo(current + 1); // swiped left -> next image
+            } else {
+              goTo(current - 1); // swiped right -> previous image
+            }
+          }
+        }
+
+        frame.addEventListener('pointerdown', onPointerDown);
+        frame.addEventListener('pointermove', onPointerMove);
+        frame.addEventListener('pointerup', onPointerUp);
+        frame.addEventListener('pointercancel', () => { dragging = false; });
+
+        // Suppress the navigation click that follows a swipe drag.
+        frame.addEventListener('click', (e) => {
+          if (isSwipe) {
+            e.preventDefault();
+            isSwipe = false;
+          }
+        });
+
+        // Keyboard support when the frame is focused.
+        frame.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            goTo(current - 1);
+          } else if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            goTo(current + 1);
+          }
         });
       }
 
