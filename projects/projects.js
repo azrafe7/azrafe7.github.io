@@ -7,116 +7,144 @@ const PROJECTS = [
   {
     name: "template",
     description: "short desc.",
-    image: "assets/image.png",
-    url: "https://azrafe7.github.io/"
+    images: ["assets/image.png", ],
+    url: "https://azrafe7.github.io/",
+    repo: ""
   },
   */
   {
+    name: "Project One",
+    description: "A short, plain-language sentence about what this project does and why it exists.",
+    images: [
+      "https://placehold.co/640x420/1a1a1a/fafaf8?text=Project+One+%E2%80%94+1",
+      "https://placehold.co/640x420/2a2a2a/fafaf8?text=Project+One+%E2%80%94+2"
+    ],
+    url: "https://yourusername.github.io/project-one",
+    repo: "https://github.com/yourusername/project-one"
+  },
+  {
     name: "Spoke Chart",
     description: "Customizable spoke chart in plain JS.",
-    image: "assets/spoke_chart.png",
-    url: "https://azrafe7.github.io/spoke_chart/"
+    images: ["assets/spoke_chart.png", "assets/spoke_chart_01.png"],
+    url: "https://azrafe7.github.io/spoke_chart/",
+    repo: "https://github.com/azrafe7/azrafe7.github.io/tree/main/spoke_chart"
   },
   {
     name: "Worldle Web",
     description: "A multilanguage wordle clone built with Flutter (this one is a web prototype).",
-    image: "assets/worldle_web.png",
-    url: "https://azrafe7.github.io/worldle_web/"
+    images: ["assets/worldle_web.png", ],
+    repo: ""
   },
   {
     name: "JSON compare",
     description: "Compare JSON responses (with format and strict compare).",
-    image: "assets/compare_json.png",
-    url: "https://azrafe7.github.io/cmp_response/"
+    images: ["assets/compare_json.png", ],
+    url: "https://azrafe7.github.io/cmp_response/",
+    repo: ""
   },
   {
     name: "hxGeomAlgo",
     description: "Small collection of computational geometry algorithms in Haxe.",
-    image: "assets/hxGeomAlgo.png",
-    url: "https://azrafe7.github.io/hxGeomAlgo/index.html"
+    images: ["assets/hxGeomAlgo.png", ],
+    url: "https://azrafe7.github.io/hxGeomAlgo/index.html",
+    repo: ""
   },
   {
     name: "hxDelaunay",
     description: "Delaunay triangulations, Voronoi, convex hull and more. Ported to Haxe 3 from https://github.com/sledorze/hxDelaunay (itself a port of the excellent https://github.com/nodename/as3delaunay).",
-    image: "assets/hxDelaunay.png",
-    url: "https://htmlpreview.github.io/?https://raw.githubusercontent.com/azrafe7/hxDelaunay/refs/heads/master/bin/html5/bin/index.html"
+    images: ["assets/hxDelaunay.png", ],
+    url: "https://htmlpreview.github.io/?https://raw.githubusercontent.com/azrafe7/hxDelaunay/refs/heads/master/bin/html5/bin/index.html",
+    repo: ""
   },
   {
     name: "hxClipper",
     description: "Port of Angus Johnson's Clipper lib v6.4.2 to haxe 3.1+",
-    image: "assets/hxClipper.png",
-    url: "https://htmlpreview.github.io/?https://raw.githubusercontent.com/azrafe7/hxClipper/refs/heads/master/bin/js/index.html"
+    images: ["assets/hxClipper.png", ],
+    url: "https://htmlpreview.github.io/?https://raw.githubusercontent.com/azrafe7/hxClipper/refs/heads/master/bin/js/index.html",
+    repo: ""
   },
   {
     name: "hxDaedalus",
     description: "Haxe cross target version of the as3 Daedalus-lib (https://code.google.com/p/daedalus-lib/) co-authored with Justin Mills (@nanjizal).",
-    image: "assets/hxDaedalus.png",
-    url: "https://htmlpreview.github.io/?https://github.com/hxDaedalus/hxDaedalus-Examples/blob/master/hxDaedalus-Examples/web/DaedalusBitmapPathfinding.html"
+    images: ["assets/hxDaedalus.png", ],
+    url: "https://htmlpreview.github.io/?https://github.com/hxDaedalus/hxDaedalus-Examples/blob/master/hxDaedalus-Examples/web/DaedalusBitmapPathfinding.html",
+    repo: ""
   },
   {
     name: "Excel to PDF mail-merge",
     description: "Use entries from a Google/Excel spreadsheet to fill and download multiple PDFs, via API or CLI.",
-    image: "assets/excel_mail_merge_to_pdf.png",
-    url: "https://www.upwork.com/freelancers/~01a0c41e84b3f00ea8?p=1843463777428619264"
+    images: ["assets/excel_mail_merge_to_pdf.png", ],
+    url: "https://www.upwork.com/freelancers/~01a0c41e84b3f00ea8?p=1843463777428619264",
+    repo: ""
   },
   {
     name: "MidJourney Feed Downloader",
     description: "Extract and save images from MidJourney showcase feed.",
-    image: "assets/midjourney_feed_downloader.png",
-    url: "https://www.youtube.com/watch?v=yUDKaDZFUig"
+    images: ["assets/midjourney_feed_downloader.png", ],
+    url: "https://www.youtube.com/watch?v=yUDKaDZFUig",
+    repo: ""
   },
   {
     name: "Send 2 Photopea (Chrome Extension)",
     description: "Send images and videos right to Photopea with one-click.",
-    image: "assets/send_2_photopea.png",
-    url: "https://chromewebstore.google.com/detail/send-2-photopea/ngjdphpkaopdenfbgkkkgmajgcmhpkme"
+    images: ["assets/send_2_photopea.png", ],
+    url: "https://chromewebstore.google.com/detail/send-2-photopea/ngjdphpkaopdenfbgkkkgmajgcmhpkme",
+    repo: ""
   },
   {
     name: "Element Zapper (Chrome Extension)",
     description: "Zap/remove any element. Get rid of annoying things on the internet.",
-    image: "assets/Element Zapper.png",
-    url: "https://chromewebstore.google.com/detail/element-zapper/noopjpinkmgojgljobbpbiehkhmaopio"
+    images: ["assets/Element Zapper.png", ],
+    url: "https://chromewebstore.google.com/detail/element-zapper/noopjpinkmgojgljobbpbiehkhmaopio",
+    repo: ""
   },
   {
     name: "Pop Element (Chrome Extension)",
     description: "Pop out the current page (or an element) into a separate window.",
-    image: "assets/Pop Element.png",
-    url: "https://chromewebstore.google.com/detail/popelement/cbkjfkgogipoonckgoppiofacaocpfdj"
+    images: ["assets/Pop Element.png", ],
+    url: "https://chromewebstore.google.com/detail/popelement/cbkjfkgogipoonckgoppiofacaocpfdj",
+    repo: ""
   },
   {
     name: "Black & White Web (Chrome Extension)",
     description: "Browse the Web in Black & White.",
-    image: "assets/B&W Web.png",
-    url: "https://chromewebstore.google.com/detail/black-white-web/eeghanoecgfjjflojdbjhmdpcdjceldh"
+    images: ["assets/B&W Web.png", ],
+    url: "https://chromewebstore.google.com/detail/black-white-web/eeghanoecgfjjflojdbjhmdpcdjceldh",
+    repo: ""
   },
   {
     name: "Masterin Scraper",
     description: "Scrape masterin site with Python",
-    image: "assets/Masterin Scraper.png",
-    url: "https://www.youtube.com/watch?v=vxorDz8i6l4"
+    images: ["assets/Masterin Scraper.png", ],
+    url: "https://www.youtube.com/watch?v=vxorDz8i6l4",
+    repo: ""
   },
   {
     name: "Maya scripts",
     description: "Handy scripts to speed up Maya workflow.",
-    image: "assets/maya_scripts.png",
-    url: "https://www.youtube.com/watch?v=oWW7kGEasiQ"
+    images: ["assets/maya_scripts.png", ],
+    url: "https://www.youtube.com/watch?v=oWW7kGEasiQ",
+    repo: ""
   },
   {
     name: "VLC 4 YouTube (Firefox Extension)",
     description: "Click the extension icon when you are on a YouTube™ page to open the current video in VLC (or just hit Alt+V).",
-    image: "assets/vlc_4_yotube.jpg",
-    url: "https://addons.mozilla.org/it/firefox/addon/vlc-4-youtube-beta-4-firefox/"
+    images: ["assets/vlc_4_yotube.jpg", ],
+    url: "https://addons.mozilla.org/it/firefox/addon/vlc-4-youtube-beta-4-firefox/",
+    repo: ""
   },
   {
     name: "PDF Redactor",
     description: "A FastAPI service that redacts sections of PDFs using PyMuPDF, with a clean HTML frontend.",
-    image: "assets/PDF Redactor.png",
-    url: "https://pdf-redact-hgoj.onrender.com/"
+    images: ["assets/PDF Redactor.png", ],
+    url: "https://pdf-redact-hgoj.onrender.com/",
+    repo: ""
   },
   {
     name: "RSA Finder - Toscana",
     description: "Find/search/filter/visualize RSA facilities in Toscana (with map and real data).",
-    image: "assets/RSA Finder.png",
-    url: "https://rsa-finder-toscana.onrender.com/"
+    images: ["assets/RSA Finder.png", ],
+    url: "https://rsa-finder-toscana.onrender.com/",
+    repo: ""
   },
 ];
