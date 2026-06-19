@@ -158,7 +158,6 @@ a {
   display: block;
   filter: grayscale(75%);
   transition: filter 0.2s ease, transform 0.3s ease;
-  pointer-events: none;
   -webkit-user-drag: none;
 }
 
