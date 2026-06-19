@@ -43,7 +43,7 @@ const PROJECTS = [
   {
     name: "hxGeomAlgo",
     description: "Small collection of computational geometry algorithms in Haxe.",
-    images: ["assets/hxGeomAlgo_00.jpg", ],
+    images: ["assets/hxGeomAlgo_00.jpg", "assets/hxGeomAlgo_01.jpg", "assets/hxGeomAlgo_02.jpg", ],
     url: "https://azrafe7.github.io/hxGeomAlgo/index.html",
     repo: "https://github.com/azrafe7/hxGeomAlgo"
   },
@@ -120,7 +120,7 @@ const PROJECTS = [
   {
     name: "Maya scripts",
     description: "Handy scripts to speed up Maya workflow.",
-    images: ["assets/maya_scripts_00.jpg", ],
+    images: ["assets/maya_scripts_00.jpg", "assets/maya_scripts_01.jpg"],
     url: "https://www.youtube.com/watch?v=oWW7kGEasiQ",
     repo: ""
   },
