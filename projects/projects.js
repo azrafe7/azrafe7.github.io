@@ -140,7 +140,7 @@ const PROJECTS = [
   },
   {
     name: "RSA Finder - Toscana",
-    description: "Find/search/filter/visualize RSA facilities in Toscana (with map and real data).",
+    description: "Find/search/filter/visualize RSA facilities in Toscana (with map and real data). 🇮🇹 Mappa interattiva delle RSA in Toscana (con dati reali).",
     images: ["assets/RSA_Finder_00.jpg", "assets/RSA_Finder_01.jpg", ],
     url: "https://rsa-finder-toscana.onrender.com/",
     repo: "https://github.com/azrafe7/rsa-finder-toscana"
