@@ -13,6 +13,13 @@ const PROJECTS = [
   },
   */
   {
+    name: "NetBookBug",
+    description: "Multiplayer (LAN) scrabble-like board game written in C++. Defeat your enemies writing words with your available letters. Gain bonuses by using more letters and forming longer words making your enemies' life harder.",
+    images: ["assets/NetBookBug_00.jpg", "assets/NetBookBug_01.jpg", ],
+    url: "https://sourceforge.net/projects/netbookbug/",
+    repo: ""
+  },
+  {
     name: "Spoke Chart",
     description: "Customizable spoke chart in plain JS.",
     images: ["assets/spoke_chart_00.jpg", "assets/spoke_chart_01.jpg", ],
