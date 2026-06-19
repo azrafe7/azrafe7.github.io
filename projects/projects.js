@@ -50,7 +50,7 @@ const PROJECTS = [
   {
     name: "hxDelaunay",
     description: "Delaunay triangulations, Voronoi, convex hull and more. Ported to Haxe 3 from https://github.com/sledorze/hxDelaunay (itself a port of the excellent https://github.com/nodename/as3delaunay).",
-    images: ["assets/hxDelaunay_00.jpg", ],
+    images: ["assets/hxDelaunay_00.jpg", "assets/hxDelaunay_01.jpg", "assets/hxDelaunay_02.jpg", ],
     url: "https://htmlpreview.github.io/?https://raw.githubusercontent.com/azrafe7/hxDelaunay/refs/heads/master/bin/html5/bin/index.html",
     repo: "https://github.com/azrafe7/hxdelaunay"
   },
