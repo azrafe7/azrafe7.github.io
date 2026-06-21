@@ -42,7 +42,7 @@
 
     projects.forEach((project, i) => {
       const num = String(i + 1).padStart(2, '0');
-      const images = project.images && project.images.length ? project.images : [project.image];
+      const images = project.images;
 
       const card = document.createElement('article');
       card.className = 'card';
@@ -78,7 +78,7 @@
 
       // Wire up dot navigation, arrows, swipe, and keyboard to switch
       // screenshots without leaving the page.
-      if (images.length > 1) {
+      if (images.length > 0) {
         const frame = card.querySelector('.card__frame');
         const img = card.querySelector('.card__image');
         const dotEls = card.querySelectorAll('.card__dot');
@@ -88,8 +88,10 @@
         function goTo(idx) {
           current = ((idx % images.length) + images.length) % images.length;
           img.src = images[current];
-          dotEls.forEach((d) => d.classList.remove('is-active'));
-          dotEls[current].classList.add('is-active');
+          if (dotEls.length > 0) {
+            dotEls.forEach((d) => d.classList.remove('is-active'));
+            dotEls[current].classList.add('is-active');
+          }
         }
 
         dotEls.forEach((dot) => {
