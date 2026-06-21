@@ -152,4 +152,11 @@ const PROJECTS = [
     url: "https://reverse-geocoding.onrender.com/",
     repo: "https://github.com/azrafe7/reverse-geocoding"
   },
+  {
+    name: "Resave PDF",
+    description: "Quickly preview and re-save PDF. Works with protected files and saves them without password. All happens locally, nothing leaves the browser.",
+    images: ["assets/Resave_PDF_00.jpg", "assets/Resave_PDF_01.jpg", "assets/Resave_PDF_02.jpg", ],
+    url: "https://resave-pdf.onrender.com/",
+    repo: "https://github.com/azrafe7/resave-pdf"
+  },
 ];
