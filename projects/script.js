@@ -65,7 +65,7 @@
       card.innerHTML = `
         <span class="card__index">${num} / ${total}</span>
         <a class="card__frame" href="${project.url}" target="_blank" rel="noopener" tabindex="0" draggable="false">
-          <img class="card__image" src="${images[0]}" alt="${project.name}" loading="lazy">
+          <img class="card__image" src="${images[0]}" alt="${project.name}" loading="lazy" draggable="false">
           ${arrows}
         </a>
         ${dots}
