@@ -34,6 +34,121 @@
 
     return array;
   }
+
+  // --- Lightbox: a single shared modal reused by every card. ---------
+
+  const lightbox = document.createElement('div');
+  lightbox.className = 'lightbox';
+  lightbox.setAttribute('aria-hidden', 'true');
+  lightbox.innerHTML = `
+    <div class="lightbox__backdrop"></div>
+    <div class="lightbox__content" role="dialog" aria-modal="true" aria-label="Image preview">
+      <button class="lightbox__close" type="button" aria-label="Close preview">&times;</button>
+      <button class="lightbox__nav lightbox__nav--prev" type="button" aria-label="Previous image">&lsaquo;</button>
+      <img class="lightbox__image" src="" alt="" draggable="false">
+      <button class="lightbox__nav lightbox__nav--next" type="button" aria-label="Next image">&rsaquo;</button>
+      <div class="lightbox__caption">
+        <span class="lightbox__title"></span>
+        <span class="lightbox__count"></span>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(lightbox);
+
+  const lbImage = lightbox.querySelector('.lightbox__image');
+  const lbTitle = lightbox.querySelector('.lightbox__title');
+  const lbCount = lightbox.querySelector('.lightbox__count');
+  const lbPrev = lightbox.querySelector('.lightbox__nav--prev');
+  const lbNext = lightbox.querySelector('.lightbox__nav--next');
+  const lbClose = lightbox.querySelector('.lightbox__close');
+  const lbBackdrop = lightbox.querySelector('.lightbox__backdrop');
+
+  let lbImages = [];
+  let lbIndex = 0;
+  let lbSyncCard = null; // optional callback to keep the card thumbnail in sync
+  let lastFocusedEl = null;
+
+  function lbRender() {
+    lbImage.src = lbImages[lbIndex];
+    lbImage.alt = lbTitle.textContent;
+    lbCount.textContent = lbImages.length > 1 ? `${lbIndex + 1} / ${lbImages.length}` : '';
+    const showNav = lbImages.length > 1;
+    lbPrev.style.display = showNav ? '' : 'none';
+    lbNext.style.display = showNav ? '' : 'none';
+    if (lbSyncCard) lbSyncCard(lbIndex);
+  }
+
+  function lbGoTo(idx) {
+    lbIndex = ((idx % lbImages.length) + lbImages.length) % lbImages.length;
+    lbRender();
+  }
+
+  function openLightbox(title, images, startIndex, syncCard) {
+    lbImages = images;
+    lbIndex = startIndex || 0;
+    lbSyncCard = typeof syncCard === 'function' ? syncCard : null;
+    lbTitle.textContent = title;
+    lbRender();
+    lightbox.classList.add('is-open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('lightbox-open');
+    lastFocusedEl = document.activeElement;
+    lbClose.focus();
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('is-open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('lightbox-open');
+    lbImage.src = '';
+    if (lastFocusedEl && lastFocusedEl.focus) lastFocusedEl.focus();
+  }
+
+  lbClose.addEventListener('click', closeLightbox);
+  lbBackdrop.addEventListener('click', closeLightbox);
+  lbPrev.addEventListener('click', () => lbGoTo(lbIndex - 1));
+  lbNext.addEventListener('click', () => lbGoTo(lbIndex + 1));
+
+  // The content wrapper is full-bleed (for centering) and sits visually
+  // above the backdrop, so clicks on its empty padding area need their
+  // own handler to close the modal too.
+  lightbox.querySelector('.lightbox__content').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeLightbox();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('is-open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    else if (e.key === 'ArrowLeft') lbGoTo(lbIndex - 1);
+    else if (e.key === 'ArrowRight') lbGoTo(lbIndex + 1);
+  });
+
+  // Swipe support inside the lightbox itself.
+  (function () {
+    const SWIPE_THRESHOLD = 40;
+    let startX = 0, startY = 0, deltaX = 0, dragging = false;
+
+    lightbox.addEventListener('pointerdown', (e) => {
+      if (!e.target.closest('.lightbox__content')) return;
+      dragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      deltaX = 0;
+    });
+    lightbox.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      deltaX = e.clientX - startX;
+    });
+    lightbox.addEventListener('pointerup', (e) => {
+      if (!dragging) return;
+      dragging = false;
+      const deltaY = e.clientY - startY;
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > SWIPE_THRESHOLD) {
+        lbGoTo(lbIndex + (deltaX < 0 ? 1 : -1));
+      }
+    });
+    lightbox.addEventListener('pointercancel', () => { dragging = false; });
+  })();
   
   const grid = document.getElementById('grid');
 
@@ -64,7 +179,7 @@
 
       card.innerHTML = `
         <span class="card__index">${num} / ${total}</span>
-        <a class="card__frame" href="${project.url}" target="_blank" rel="noopener" tabindex="0" draggable="false">
+        <a class="card__frame" type="button" aria-label="Open larger preview of ${project.name}">
           <img class="card__image" src="${images[0]}" alt="${project.name}" loading="lazy" draggable="false">
           ${arrows}
         </a>
@@ -152,15 +267,17 @@
         frame.addEventListener('pointerup', onPointerUp);
         frame.addEventListener('pointercancel', () => { dragging = false; });
 
-        // Suppress the navigation click that follows a swipe drag.
-        frame.addEventListener('click', (e) => {
+        // A plain click/tap (no swipe) opens the full-size preview modal.
+        frame.addEventListener('click', () => {
           if (isSwipe) {
-            e.preventDefault();
             isSwipe = false;
+            return;
           }
+          openLightbox(project.name, images, current, goTo);
         });
 
-        // Keyboard support when the frame is focused.
+        // Keyboard support when the frame is focused (native button
+        // semantics already handle Enter/Space to open the modal).
         frame.addEventListener('keydown', (e) => {
           if (e.key === 'ArrowLeft') {
             e.preventDefault();
