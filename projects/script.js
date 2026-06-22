@@ -166,7 +166,7 @@
         ? `<div class="card__dots">${images.map((_, idx) =>
             `<button class="card__dot${idx === 0 ? ' is-active' : ''}" data-index="${idx}" aria-label="Show screenshot ${idx + 1}"></button>`
           ).join('')}</div>`
-        : '';
+        : '<div class="card__dots"><button class="card__dot" style="visibility: hidden"></button></div>';
 
       const arrows = images.length > 1
         ? `<button class="card__arrow card__arrow--prev" data-dir="-1" aria-label="Previous screenshot">‹</button>
