@@ -1,6 +1,23 @@
 (function () {
 
-  const SHUFFLE_PROJECTS = true;
+  function stringToBoolean(str) {
+    if (typeof str !== 'string') return null;
+    
+    const normalized = str.trim().toLowerCase();
+
+    if (normalized === 'true' || normalized === '1') return true;
+    if (normalized === 'false' || normalized === '0') return false;
+
+    return null;
+  }
+
+  let SHUFFLE_PROJECTS = true;
+  const paramsString = window.location.search;
+  const searchParams = new URLSearchParams(paramsString);
+  if (searchParams.has('shuffle')) {
+    const shuffleParam = stringToBoolean(searchParams.get('shuffle'));
+    if (shuffleParam != null) SHUFFLE_PROJECTS = shuffleParam;
+  }
 
   // Small inline icon for the "view source" repo link.
   const REPO_ICON = `
