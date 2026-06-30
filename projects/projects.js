@@ -159,4 +159,11 @@ const PROJECTS = [
     url: "https://resave-pdf.onrender.com/",
     repo: "https://github.com/azrafe7/resave-pdf"
   },
+  {
+    name: "MappaDistributori",
+    description: "Find/search/filter/visualize fuel stations in Italy (with map and real data). 🇮🇹 Mappa interattiva dei distributori di carburanti in Italia (con dati reali).",
+    images: ["assets/mappadistributori_00.jpg", "assets/mappadistributori_01.jpg", "assets/mappadistributori_02.jpg", ],
+    url: "https://mappadistributori.onrender.com/",
+    repo: "https://github.com/azrafe7/mappadistributori"
+  },
 ];
