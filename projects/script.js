@@ -196,15 +196,15 @@
 
       card.innerHTML = `
         <span class="card__index">${num} / ${total}</span>
+        <div class="card__head">
+          <a class="card__name" href="${project.url}" target="_blank" rel="noopener">${project.name}</a>
+          ${repoLink}
+        </div>
         <a class="card__frame" type="button" aria-label="Open larger preview of ${project.name}">
           <img class="card__image" src="${images[0]}" alt="${project.name}" loading="lazy" draggable="false">
           ${arrows}
         </a>
         ${dots}
-        <div class="card__head">
-          <a class="card__name" href="${project.url}" target="_blank" rel="noopener">${project.name}</a>
-          ${repoLink}
-        </div>
         <p class="card__desc">${project.description}</p>
       `;
 
