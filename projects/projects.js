@@ -174,10 +174,17 @@ const PROJECTS = [
     repo: "https://github.com/azrafe7/AzMailMerge"
   },
   {
-    name: "FromFromSheet",
-    description: "Generate a Google Form from spreadsheet data. Supports almost all field types and conditional workflows.",
+    name: "FormFromSheet",
+    description: "Generate a Google Form from Spreadsheet data. Supports almost all field types and conditional workflows.",
     images: ["assets/FormFromSheet_00.jpg", ],
     url: "",
     repo: "https://github.com/azrafe7/FormFromSheet"
+  },
+  {
+    name: "Modal Remover & Scroll Unlocker (Chrome & Firefox Extension)",
+    description: "Remove full-screen pop-ups and overlays and restore page scrolling with one click. On-demand, private, no tracking.",
+    images: ["assets/MR&SU_00.jpg", ],
+    url: "https://chromewebstore.google.com/detail/modal-remover-scroll-unlo/kjbochfncggbiaohfmakiiefhfimepki",
+    repo: "https://github.com/azrafe7/modal-unlocker"
   },
 ];
