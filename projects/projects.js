@@ -166,4 +166,18 @@ const PROJECTS = [
     url: "https://mappadistributori.onrender.com/",
     repo: "https://github.com/azrafe7/mappadistributori"
   },
+  {
+    name: "AZMailMerge",
+    description: "Generate pdf/doc/slide from spreadsheet data and a template",
+    images: ["assets/AZMailMerge_00.jpg", ],
+    url: "",
+    repo: "https://github.com/azrafe7/AzMailMerge"
+  },
+  {
+    name: "FromFromSheet",
+    description: "Generate a Google Form from spreadsheet data. Supports almost all field types and conditional workflows.",
+    images: ["assets/FormFromSheet_00.jpg", ],
+    url: "",
+    repo: "https://github.com/azrafe7/FormFromSheet"
+  },
 ];
