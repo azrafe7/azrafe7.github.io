@@ -190,7 +190,7 @@ const PROJECTS = [
   {
     name: "Modal Remover & Scroll Unlocker (Chrome & Firefox Extension)",
     description: "Remove full-screen pop-ups and overlays and restore page scrolling with one click. On-demand, private, no tracking.",
-    images: ["assets/MR&SU_00.jpg", ],
+    images: ["assets/MR&SU_00.jpg", "assets/MR&SU_01.jpg", "assets/MR&SU_02.jpg", "assets/MR&SU_03.jpg", ],
     url: "https://chromewebstore.google.com/detail/modal-remover-scroll-unlo/kjbochfncggbiaohfmakiiefhfimepki",
     repo: "https://github.com/azrafe7/modal-unlocker"
   },
