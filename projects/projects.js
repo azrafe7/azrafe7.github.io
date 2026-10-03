@@ -27,6 +27,13 @@ const PROJECTS = [
     repo: "https://github.com/azrafe7/azrafe7.github.io/tree/main/spoke_chart"
   },
   {
+    name: "Sistema TS",
+    description: "Invio Precompilata in C#.",
+    images: ["assets/SistemaTS_00.jpg", ],
+    url: "",
+    repo: ""
+  },
+  {
     name: "Worldle Web",
     description: "A multilanguage wordle clone built with Flutter (this one is a web prototype).",
     images: ["assets/worldle_web_00.jpg", "assets/worldle_web_01.jpg", ],
