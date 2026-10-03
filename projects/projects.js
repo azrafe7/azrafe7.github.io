@@ -20,18 +20,18 @@ const PROJECTS = [
     repo: ""
   },
   {
-    name: "Spoke Chart",
-    description: "Customizable spoke chart in plain JS.",
-    images: ["assets/spoke_chart_00.jpg", "assets/spoke_chart_01.jpg", ],
-    url: "https://azrafe7.github.io/spoke_chart/",
-    repo: "https://github.com/azrafe7/azrafe7.github.io/tree/main/spoke_chart"
-  },
-  {
     name: "Sistema TS",
     description: "Invio Precompilata in C#.",
     images: ["assets/SistemaTS_00.jpg", ],
     url: "",
     repo: ""
+  },
+  {
+    name: "Spoke Chart",
+    description: "Customizable spoke chart in plain JS.",
+    images: ["assets/spoke_chart_00.jpg", "assets/spoke_chart_01.jpg", ],
+    url: "https://azrafe7.github.io/spoke_chart/",
+    repo: "https://github.com/azrafe7/azrafe7.github.io/tree/main/spoke_chart"
   },
   {
     name: "Worldle Web",
