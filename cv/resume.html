@@ -23,7 +23,7 @@
     --sidebar-w: 228px;
   }
 
-  html { font-size: 15px; }
+  html { font-size: 14.1px; }
 
   body {
     font-family: 'DM Sans', sans-serif;
@@ -38,6 +38,7 @@
 
   /* ── Page Shell ──────────────────────────────────────────────────── */
   .page {
+    position: relative;
     width: 210mm;
     min-height: 297mm;
     background: var(--white);
@@ -263,7 +264,7 @@
   }
 
   /* Projects */
-  .project { margin-bottom: 10px; }
+  .project { margin-bottom: 10px; break-inside: avoid; }
 
   .project-header {
     display: flex;
@@ -292,10 +293,33 @@
 
   .project .bullet-list li { font-size: 0.8rem; }
 
+  /* ── Page numbers (print only) ───────────────────────────────────── */
+  /* Hidden on screen; created by the script below right before printing. */
+  .page-footer { display: none; }
+
   /* ── Print styles ────────────────────────────────────────────────── */
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
   @media print {
-    body { background: none; padding: 0; }
-    .page { box-shadow: none; width: 100%; min-height: 100vh; }
+    html, body { margin: 0; padding: 0; background: none; display: block; min-height: 0; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    .page { box-shadow: none; width: 210mm; min-height: 297mm; }
+
+    .page-footer {
+      display: block;
+      position: absolute;
+      right: 8mm;
+      height: 6mm;
+      line-height: 6mm;
+      font-size: 0.8rem;
+      font-style: italic;
+      color: var(--gray);
+      z-index: 10;
+    }
   }
 </style>
 </head>
@@ -509,5 +533,53 @@
   </main>
 </div>
 
+<script>
+  /*
+   * Page numbers "Pag. #/#" (print only, bottom-right, italic, no page margins).
+   *
+   * Chrome only draws @page margin boxes (@bottom-right) inside the page margin,
+   * and counter(page) doesn't work in normal content. Since the page must have
+   * margin: 0, the footers are added here: the sheet is rounded up to a whole
+   * number of A4 pages and one footer is placed at the bottom of each of them.
+   */
+  (function () {
+    var PAGE_H_MM = 297;
+
+    function mmToPx(mm) {
+      var probe = document.createElement('div');
+      probe.style.cssText = 'position:absolute;visibility:hidden;height:' + mm + 'mm;width:0';
+      document.body.appendChild(probe);
+      var px = probe.getBoundingClientRect().height;
+      probe.remove();
+      return px;
+    }
+
+    function clearFooters() {
+      var sheet = document.querySelector('.page');
+      sheet.querySelectorAll('.page-footer').forEach(function (el) { el.remove(); });
+      sheet.style.minHeight = '';
+    }
+
+    function addFooters() {
+      clearFooters();
+      var sheet = document.querySelector('.page');
+      var pageH = mmToPx(PAGE_H_MM);
+      var pages = Math.max(1, Math.ceil((sheet.offsetHeight - 2) / pageH));
+
+      sheet.style.minHeight = (pages * PAGE_H_MM) + 'mm';
+
+      for (var i = 1; i <= pages; i++) {
+        var f = document.createElement('div');
+        f.className = 'page-footer';
+        f.textContent = 'Pag. ' + i + '/' + pages;
+        f.style.top = 'calc(' + (i * PAGE_H_MM) + 'mm - 8mm)';
+        sheet.appendChild(f);
+      }
+    }
+
+    window.addEventListener('beforeprint', addFooters);
+    window.addEventListener('afterprint', clearFooters);
+  })();
+</script>
 
 </body></html>
