@@ -554,16 +554,47 @@
       return px;
     }
 
+    var TOP_GAP_MM = 8;      // breathing space above a project that starts a new page
+    var FOOTER_ZONE_MM = 10; // bottom area kept free for the page number
+
     function clearFooters() {
       var sheet = document.querySelector('.page');
       sheet.querySelectorAll('.page-footer').forEach(function (el) { el.remove(); });
+      sheet.querySelectorAll('.project').forEach(function (el) {
+        el.style.marginTop = '';
+        el.style.paddingTop = '';
+      });
       sheet.style.minHeight = '';
+    }
+
+    // Push every .project that would be split by (or run into the footer of)
+    // a page boundary to the next page, and give it some space on top there.
+    // Padding is used for the gap because margins are discarded at page breaks.
+    function spaceProjectsAtPageTop(sheet, pageH) {
+      var gap = mmToPx(TOP_GAP_MM);
+      var footerZone = mmToPx(FOOTER_ZONE_MM);
+
+      sheet.querySelectorAll('.project').forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        var top = r.top - sheet.getBoundingClientRect().top;
+        var pageIdx = Math.floor(top / pageH);
+        var pageStart = pageIdx * pageH;
+        var limit = (pageIdx + 1) * pageH - footerZone;
+
+        var crosses = top + r.height > limit;
+        var alreadyAtTop = top - pageStart < 2;
+        if (!crosses || alreadyAtTop || r.height > pageH - footerZone) return;
+
+        el.style.marginTop = ((pageIdx + 1) * pageH - top) + 'px';
+        el.style.paddingTop = gap + 'px';
+      });
     }
 
     function addFooters() {
       clearFooters();
       var sheet = document.querySelector('.page');
       var pageH = mmToPx(PAGE_H_MM);
+      spaceProjectsAtPageTop(sheet, pageH);
       var pages = Math.max(1, Math.ceil((sheet.offsetHeight - 2) / pageH));
 
       sheet.style.minHeight = (pages * PAGE_H_MM) + 'mm';
