@@ -80,8 +80,10 @@
             .protected__content__btn:hover {
                 background-color: #4CAF50;
             }
-            .protected__alert #alert-hint {
+            .protected__alert #alert-hint-1, .protected__alert #alert-hint-2 {
                 display: none;
+                font-family: monospace;
+                padding-top: 2px;
                 font-size: .75rem;
             }
         </style>
@@ -91,7 +93,10 @@
     <body>
 
         <div class="protected">
-            <div class="protected__alert" data-id="alert">You entered the wrong password<span id="alert-hint">(but you can find a way in if you look deep enough! ;)</span></div>
+            <div class="protected__alert" data-id="alert">You entered the wrong password
+              <span id="alert-hint-1">(But you can FIND A WAY IN if you look deep enough 😉)</span>
+              <span id="alert-hint-2">(I forgot the password too 😅)</span>
+            </div>
             <div class="protected__content">
                 <h1 class="protected__content__heading">You need a passworldle to continue</h1>
                 <input class="protected__content__input" data-id="password" type="password" placeholder="Enter the passworldle"/>
@@ -112,7 +117,8 @@
                 var alert = document.querySelectorAll('[data-id="alert"]')
 
                 attempts = secret.trim() ? attempts + 1 : 0;
-                document.querySelector('#alert-hint').style.display = (attempts >= 3) ? 'block' : 'none';
+                document.querySelector('#alert-hint-1').style.display = (attempts >= 3) ? 'block' : 'none';
+                document.querySelector('#alert-hint-2').style.display = (attempts >= 5) ? 'block' : 'none';
 
                 var request = new XMLHttpRequest()
                 request.open('GET', url, true)
