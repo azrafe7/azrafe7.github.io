@@ -80,7 +80,10 @@
             .protected__content__btn:hover {
                 background-color: #4CAF50;
             }
-
+            .protected__alert #alert-hint {
+                display: none;
+                font-size: .75rem;
+            }
         </style>
 
     </head>
@@ -88,7 +91,7 @@
     <body>
 
         <div class="protected">
-            <div class="protected__alert" data-id="alert">You entered the wrong password</div>
+            <div class="protected__alert" data-id="alert">You entered the wrong password<span id="alert-hint">(but you can find a way in if you look deep enough! ;)</span></div>
             <div class="protected__content">
                 <h1 class="protected__content__heading">You need a passworldle to continue</h1>
                 <input class="protected__content__input" data-id="password" type="password" placeholder="Enter the passworldle"/>
@@ -101,11 +104,15 @@
             "use strict"
             var button = document.querySelectorAll('[data-id="button"]')
             var password = document.querySelectorAll('[data-id="password"]')
-
+            var attempts = 0;
+            
             function login(secret) {
                 var hash = sha1(secret)
                 var url = hash + "/index.html"
                 var alert = document.querySelectorAll('[data-id="alert"]')
+
+                attempts = secret.trim() ? attempts + 1 : 0;
+                document.querySelector('#alert-hint').style.display = (attempts >= 3) ? 'block' : 'none';
 
                 var request = new XMLHttpRequest()
                 request.open('GET', url, true)
